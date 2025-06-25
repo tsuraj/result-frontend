@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f5f7fa;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4;
+  }
+  
+  .tab-btn {
+    @apply px-6 py-3 font-medium text-gray-600;
+  }
+  
+  .tab-btn.active {
+    @apply text-red-600 border-b-2 border-red-600;
+  }
+}
