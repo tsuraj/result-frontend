@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import JobCard from '../components/ui/JobCard'
 import ResultCard from '../components/ui/ResultCard'
@@ -6,16 +6,46 @@ import AdmitCard from '../components/ui/AdmitCard'
 import CategoryCard from '../components/ui/CategoryCard'
 import QuickLinks from '../components/ui/QuickLinks'
 import UpdatesPanel from '../components/ui/UpdatesPanel'
-import { 
-  notifications, 
-  latestJobs, 
-  results, 
-  admitCards, 
-  categories 
-} from '../data/mockData'
+import AdminDashboard from './AdminDashboard'
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState('latest-jobs')
+  const [notifications, setNotifications] = useState([])
+  const [latestJobs, setLatestJobs] = useState([])
+  const [results, setResults] = useState([])
+  const [admitCards, setAdmitCards] = useState([])
+  const [categories, setCategories] = useState([])
+
+  // Demo admin flag (replace with real auth logic)
+  const isAdmin = true;
+
+  useEffect(() => {
+    // Fetch notifications
+    fetch('http://localhost:8000/api/v1/notifications')
+      .then(res => res.json())
+      .then(data => setNotifications(data))
+      .catch(() => setNotifications([]))
+    // Fetch latest jobs
+    fetch('http://localhost:8000/api/v1/jobs')
+      .then(res => res.json())
+      .then(data => setLatestJobs(data))
+      .catch(() => setLatestJobs([]))
+    // Fetch results
+    fetch('http://localhost:8000/api/v1/results')
+      .then(res => res.json())
+      .then(data => setResults(data))
+      .catch(() => setResults([]))
+    // Fetch admit cards
+    fetch('http://localhost:8000/api/v1/admit_cards')
+      .then(res => res.json())
+      .then(data => setAdmitCards(data))
+      .catch(() => setAdmitCards([]))
+    // Fetch categories
+    fetch('http://localhost:8000/api/v1/categories')
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(() => setCategories([]))
+  }, [])
 
   return (
     <div className="min-h-screen">
@@ -49,6 +79,14 @@ const Home = () => {
               >
                 Admit Cards
               </button>
+              {isAdmin && (
+                <button
+                  className={`tab-btn ${activeTab === 'admin-dashboard-page' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('admin-dashboard-page')}
+                >
+                  Admin Dashboard Page
+                </button>
+              )}
             </div>
 
             {/* Tab Content */}
@@ -90,6 +128,10 @@ const Home = () => {
                     </Link>
                   </div>
                 </div>
+              )}
+
+              {activeTab === 'admin-dashboard-page' && isAdmin && (
+                <AdminDashboard />
               )}
             </div>
           </div>
