@@ -43,9 +43,12 @@ const Header = () => {
             <button className="hidden md:flex items-center text-gray-700 hover:text-red-600">
               <FaBell className="mr-1" /> <span className="hidden lg:inline">Notifications</span>
             </button>
-            <button className="hidden md:flex items-center btn-primary">
+            <Link to="/login" className="hidden md:flex items-center btn-primary">
               <FaUser className="mr-1" /> <span className="hidden lg:inline">Login</span>
-            </button>
+            </Link>
+            <Link to="/signup" className="hidden md:inline-block font-medium text-gray-700 hover:text-red-600">
+              Sign Up
+            </Link>
             <button 
               className="md:hidden text-gray-700"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -73,9 +76,12 @@ const Header = () => {
               <button className="flex items-center text-gray-700 hover:text-red-600">
                 <FaBell className="mr-1" /> Notifications
               </button>
-              <button className="flex items-center btn-primary">
+              <Link to="/login" className="flex items-center btn-primary" onClick={() => setIsMenuOpen(false)}>
                 <FaUser className="mr-1" /> Login
-              </button>
+              </Link>
+              <Link to="/signup" className="flex items-center font-medium text-gray-700 hover:text-red-600" onClick={() => setIsMenuOpen(false)}>
+                Sign Up
+              </Link>
             </div>
           </div>
         </div>
