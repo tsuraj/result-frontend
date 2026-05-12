@@ -15,8 +15,8 @@ const JobCard = ({ job }) => {
       </div>
       <div className="flex justify-between items-center mt-3">
         <span className="text-sm text-gray-500">Last Date: {job.lastDate}</span>
-        <Link to={job.link} className="btn-primary text-sm px-4 py-2">
-          Apply Now
+        <Link to={`/jobs/${job.id}`} className="btn-primary text-sm px-4 py-2">
+          View Details
         </Link>
       </div>
     </div>

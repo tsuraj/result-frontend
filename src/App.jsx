@@ -8,6 +8,7 @@ import Home from './pages/Home'
 import LatestJobs from './pages/LatestJobs'
 import Results from './pages/Results'
 import AdmitCards from './pages/AdmitCards'
+import JobDetails from './pages/JobDetails'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 
@@ -30,6 +31,7 @@ function App() {
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/latest-jobs" element={<LatestJobs />} />
+                    <Route path="/jobs/:id" element={<JobDetails />} />
                     <Route path="/results" element={<Results />} />
                     <Route path="/admit-cards" element={<AdmitCards />} />
                     <Route path="*" element={<div className="text-center py-20">Page Not Found</div>} />
