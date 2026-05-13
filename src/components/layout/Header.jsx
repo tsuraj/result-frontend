@@ -1,11 +1,30 @@
-import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { FaBell, FaUser, FaBars, FaTimes } from 'react-icons/fa'
+import { useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { FaBell, FaRegBookmark, FaBars, FaTimes, FaArrowRight } from 'react-icons/fa'
+import { useJobs } from '../../context/JobsContext'
+
+const readUser = () => {
+  try { return JSON.parse(localStorage.getItem('user')) } catch { return null }
+}
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
-  
+  const navigate = useNavigate()
+  const { stats } = useJobs()
+  const activeJobs = stats.total_active
+
+  const token = localStorage.getItem('token')
+  const user = readUser()
+  const isLoggedIn = Boolean(token && user)
+  const isAdmin = isLoggedIn && user.role === 'admin'
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    navigate('/login')
+  }
+
   const navItems = [
     { name: 'Home', path: '/' },
     { name: 'Latest Jobs', path: '/latest-jobs' },
@@ -15,73 +34,127 @@ const Header = () => {
     { name: 'Syllabus', path: '/syllabus' },
   ]
 
+  const isActive = (path) =>
+    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path)
+
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container">
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center">
-            <div className="bg-red-600 text-white font-bold text-xl px-3 py-2 rounded mr-3">RR</div>
-            <div>
-              <Link to="/" className="text-2xl font-bold text-gray-800">Rojgar<span className="text-red-600">Result</span></Link>
-              <p className="text-xs text-gray-600">India's No.1 Job Portal</p>
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div className="container flex items-center justify-between py-3">
+        <Link to="/" className="flex items-center gap-3">
+          <div className="bg-red-600 text-white font-bold text-lg w-10 h-10 flex items-center justify-center rounded">RR</div>
+          <div className="leading-tight">
+            <div className="text-lg font-bold text-gray-900">
+              Rojgar<span className="text-red-600">Result</span>
+            </div>
+            <div className="text-[10px] font-semibold tracking-wide text-gray-500 flex items-center gap-1">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500" />
+              {activeJobs.toLocaleString()} ACTIVE JOBS
             </div>
           </div>
+        </Link>
 
-          <nav className="hidden md:flex space-x-6">
-            {navItems.map((item) => (
-              <Link 
+        <nav className="hidden md:flex items-center gap-7">
+          {navItems.map(item => {
+            const active = isActive(item.path)
+            return (
+              <Link
                 key={item.name}
                 to={item.path}
-                className={`font-medium ${location.pathname === item.path ? 'text-red-600' : 'text-gray-700 hover:text-red-600'}`}
+                className={`relative font-medium text-sm pb-1 ${active ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}
               >
                 {item.name}
+                {active && <span className="absolute left-0 right-0 -bottom-0.5 h-0.5 bg-red-600 rounded-full" />}
               </Link>
-            ))}
-          </nav>
+            )
+          })}
+        </nav>
 
-          <div className="flex items-center space-x-4">
-            <button className="hidden md:flex items-center text-gray-700 hover:text-red-600">
-              <FaBell className="mr-1" /> <span className="hidden lg:inline">Notifications</span>
-            </button>
-            <Link to="/login" className="hidden md:flex items-center btn-primary">
-              <FaUser className="mr-1" /> <span className="hidden lg:inline">Login</span>
-            </Link>
-            <Link to="/signup" className="hidden md:inline-block font-medium text-gray-700 hover:text-red-600">
-              Sign Up
-            </Link>
-            <button 
-              className="md:hidden text-gray-700"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+        <div className="flex items-center gap-2 md:gap-3">
+          <button className="hidden md:inline-flex relative p-2 text-gray-600 hover:text-gray-900" aria-label="Notifications">
+            <FaBell size={16} />
+            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
+          </button>
+          <button className="hidden md:inline-flex p-2 text-gray-600 hover:text-gray-900" aria-label="Bookmarks">
+            <FaRegBookmark size={16} />
+          </button>
+          {isAdmin && (
+            <>
+              <Link
+                to="/admin/jobs"
+                className={`hidden md:inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${location.pathname.startsWith('/admin/jobs') ? 'bg-red-50 text-red-700' : 'text-gray-700 hover:bg-gray-50'}`}
+              >
+                Admin Jobs
+              </Link>
+              <Link
+                to="/admin/results"
+                className={`hidden md:inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${location.pathname.startsWith('/admin/results') ? 'bg-red-50 text-red-700' : 'text-gray-700 hover:bg-gray-50'}`}
+              >
+                Admin Results
+              </Link>
+            </>
+          )}
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="hidden md:inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50"
             >
-              {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+              Log out
             </button>
-          </div>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="hidden md:inline-flex items-center px-4 py-1.5 text-sm font-medium text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Log in
+              </Link>
+              <Link
+                to="/signup"
+                className="hidden md:inline-flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+              >
+                Create account <FaArrowRight size={11} />
+              </Link>
+            </>
+          )}
+          <button className="md:hidden text-gray-700 p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+          </button>
         </div>
       </div>
 
       {isMenuOpen && (
-        <div className="md:hidden bg-white py-4 px-4 border-t">
-          <div className="flex flex-col space-y-4">
-            {navItems.map((item) => (
-              <Link 
+        <div className="md:hidden border-t border-gray-200 py-3 px-4">
+          <div className="flex flex-col gap-3">
+            {navItems.map(item => (
+              <Link
                 key={item.name}
                 to={item.path}
-                className={`font-medium ${location.pathname === item.path ? 'text-red-600' : 'text-gray-700 hover:text-red-600'}`}
+                className={`font-medium ${isActive(item.path) ? 'text-red-600' : 'text-gray-700'}`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
-            <div className="pt-4 flex space-x-4">
-              <button className="flex items-center text-gray-700 hover:text-red-600">
-                <FaBell className="mr-1" /> Notifications
-              </button>
-              <Link to="/login" className="flex items-center btn-primary" onClick={() => setIsMenuOpen(false)}>
-                <FaUser className="mr-1" /> Login
-              </Link>
-              <Link to="/signup" className="flex items-center font-medium text-gray-700 hover:text-red-600" onClick={() => setIsMenuOpen(false)}>
-                Sign Up
-              </Link>
+            {isAdmin && (
+              <>
+                <Link to="/admin/jobs" className="font-medium text-gray-700" onClick={() => setIsMenuOpen(false)}>Admin Jobs</Link>
+                <Link to="/admin/results" className="font-medium text-gray-700" onClick={() => setIsMenuOpen(false)}>Admin Results</Link>
+              </>
+            )}
+            <div className="flex gap-3 pt-2">
+              {isLoggedIn ? (
+                <button
+                  onClick={() => { setIsMenuOpen(false); handleLogout() }}
+                  className="flex-1 text-center px-4 py-2 text-sm border border-gray-300 rounded-md"
+                >
+                  Log out
+                </button>
+              ) : (
+                <>
+                  <Link to="/login" className="flex-1 text-center px-4 py-2 text-sm border border-gray-300 rounded-md" onClick={() => setIsMenuOpen(false)}>Log in</Link>
+                  <Link to="/signup" className="flex-1 text-center px-4 py-2 text-sm text-white bg-red-600 rounded-md" onClick={() => setIsMenuOpen(false)}>Create account</Link>
+                </>
+              )}
             </div>
           </div>
         </div>

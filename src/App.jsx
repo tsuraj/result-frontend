@@ -1,5 +1,4 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import NotificationBar from './components/layout/NotificationBar'
@@ -7,10 +6,48 @@ import SearchBar from './components/ui/SearchBar'
 import Home from './pages/Home'
 import LatestJobs from './pages/LatestJobs'
 import Results from './pages/Results'
+import ResultDetails from './pages/ResultDetails'
 import AdmitCards from './pages/AdmitCards'
 import JobDetails from './pages/JobDetails'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import AdminJobs from './pages/AdminJobs'
+import AdminResult from './pages/AdminResult'
+import AnswerKeys from './pages/AnswerKeys'
+import Syllabus from './pages/Syllabus'
+import { JobsProvider } from './context/JobsContext'
+import AdminRoute from './components/AdminRoute'
+
+function MainLayout() {
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+  const containerWide = isHome
+  return (
+    <div className="flex flex-col min-h-screen">
+      <NotificationBar />
+      <Header />
+      {!isHome && <SearchBar />}
+
+      <main className="flex-grow py-6">
+        <div className={containerWide ? '' : 'container'}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/latest-jobs" element={<LatestJobs />} />
+            <Route path="/jobs/:id" element={<JobDetails />} />
+            <Route path="/results" element={<Results />} />
+            <Route path="/results/:id" element={<ResultDetails />} />
+            <Route path="/admit-cards" element={<AdmitCards />} />
+            <Route path="/answer-keys" element={<AnswerKeys />} />
+            <Route path="/syllabus" element={<Syllabus />} />
+            <Route path="*" element={<div className="text-center py-20">Page Not Found</div>} />
+          </Routes>
+        </div>
+      </main>
+
+      {!isHome && <Footer />}
+    </div>
+  )
+}
 
 function App() {
   return (
@@ -18,31 +55,9 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route
-          path="*"
-          element={
-            <div className="flex flex-col min-h-screen">
-              <NotificationBar />
-              <Header />
-              <SearchBar />
-
-              <main className="flex-grow py-6">
-                <div className="container">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/latest-jobs" element={<LatestJobs />} />
-                    <Route path="/jobs/:id" element={<JobDetails />} />
-                    <Route path="/results" element={<Results />} />
-                    <Route path="/admit-cards" element={<AdmitCards />} />
-                    <Route path="*" element={<div className="text-center py-20">Page Not Found</div>} />
-                  </Routes>
-                </div>
-              </main>
-
-              <Footer />
-            </div>
-          }
-        />
+        <Route path="/admin/jobs" element={<AdminRoute><AdminJobs /></AdminRoute>} />
+        <Route path="/admin/results" element={<AdminRoute><AdminResult /></AdminRoute>} />
+        <Route path="*" element={<JobsProvider><MainLayout /></JobsProvider>} />
       </Routes>
     </Router>
   )
