@@ -12,7 +12,7 @@ const Syllabus = () => {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/syllabus`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/syllabus`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to load syllabus')
         return res.json()

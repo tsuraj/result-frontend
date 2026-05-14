@@ -19,7 +19,7 @@ const AnswerKeys = () => {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/answer_keys`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/answer_keys`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to load answer keys')
         return res.json()

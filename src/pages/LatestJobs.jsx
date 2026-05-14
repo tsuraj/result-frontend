@@ -14,7 +14,7 @@ const LatestJobs = () => {
   useEffect(() => {
     setLoading(true)
     setError('')
-    fetch(`${import.meta.env.VITE_API_URL}/jobs?page=${page}&per_page=${PAGE_SIZE}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/jobs?page=${page}&per_page=${PAGE_SIZE}`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to load jobs')
         return res.json()

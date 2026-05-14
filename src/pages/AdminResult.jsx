@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { authFetch } from '../services/authFetch'
 
-const API = `${import.meta.env.VITE_API_URL}`
+const API = `${import.meta.env.VITE_API_URL}/api/v1`
 
 const emptyResult = {
   title: '',

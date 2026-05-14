@@ -8,19 +8,19 @@ const AdminDashboard = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/notifications`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/notifications`)
       .then(res => res.json())
       .then(setNotifications);
-    fetch(`${import.meta.env.VITE_API_URL}/jobs`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/jobs`)
       .then(res => res.json())
       .then(setJobs);
-    fetch(`${import.meta.env.VITE_API_URL}/results`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/results`)
       .then(res => res.json())
       .then(setResults);
-    fetch(`${import.meta.env.VITE_API_URL}/admit_cards`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/admit_cards`)
       .then(res => res.json())
       .then(setAdmitCards);
-    fetch(`${import.meta.env.VITE_API_URL}/categories`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/categories`)
       .then(res => res.json())
       .then(setCategories);
   }, []);

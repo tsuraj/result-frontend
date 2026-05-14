@@ -14,7 +14,7 @@ export const JobsProvider = ({ children }) => {
 
   const refresh = () => {
     setLoading(true)
-    fetch(`${import.meta.env.VITE_API_URL}/jobs?per_page=1&page=1`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/jobs?per_page=1&page=1`)
       .then(res => res.json())
       .then(data => {
         if (data && data.meta) {

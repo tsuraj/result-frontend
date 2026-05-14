@@ -45,7 +45,7 @@ const ResultDetails = () => {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`${import.meta.env.VITE_API_URL}/results/${id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/results/${id}`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to load result')
         return res.json()

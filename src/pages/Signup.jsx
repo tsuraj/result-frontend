@@ -21,7 +21,7 @@ const Signup = () => {
 
     setLoading(true)
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/signup`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })

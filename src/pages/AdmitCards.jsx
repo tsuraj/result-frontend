@@ -11,7 +11,7 @@ const AdmitCards = () => {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/admit_cards`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/admit_cards`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to load admit cards')
         return res.json()

@@ -11,7 +11,7 @@ const Results = () => {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/results`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/results`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to load results')
         return res.json()

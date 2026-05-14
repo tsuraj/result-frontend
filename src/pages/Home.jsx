@@ -98,7 +98,7 @@ const Home = () => {
     }
 
     setLoading(true)
-    fetch(`${import.meta.env.VITE_API_URL}/jobs?${p.toString()}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/jobs?${p.toString()}`)
       .then(res => res.json())
       .then(data => {
         setJobs(Array.isArray(data.jobs) ? data.jobs : [])

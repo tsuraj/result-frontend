@@ -52,7 +52,7 @@ const JobDetails = () => {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`${import.meta.env.VITE_API_URL}/jobs/${id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/jobs/${id}`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to load job')
         return res.json()
