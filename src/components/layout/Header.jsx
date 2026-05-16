@@ -122,26 +122,43 @@ const Header = () => {
         </div>
       </div>
 
-      {isMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 py-3 px-4">
-          <div className="flex flex-col gap-3">
-            {navItems.map(item => (
+      <nav className="md:hidden border-t border-gray-200">
+        <div className="flex items-center gap-1 px-3 py-2 overflow-x-auto whitespace-nowrap scrollbar-none">
+          {navItems.map(item => {
+            const active = isActive(item.path)
+            return (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`font-medium ${isActive(item.path) ? 'text-red-600' : 'text-gray-700'}`}
-                onClick={() => setIsMenuOpen(false)}
+                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full border ${active ? 'bg-gray-900 text-white border-gray-900' : 'text-gray-700 border-gray-200 hover:bg-gray-50'}`}
               >
                 {item.name}
               </Link>
-            ))}
-            {isAdmin && (
-              <>
-                <Link to="/admin/jobs" className="font-medium text-gray-700" onClick={() => setIsMenuOpen(false)}>Admin Jobs</Link>
-                <Link to="/admin/results" className="font-medium text-gray-700" onClick={() => setIsMenuOpen(false)}>Admin Results</Link>
-              </>
-            )}
-            <div className="flex gap-3 pt-2">
+            )
+          })}
+          {isAdmin && (
+            <>
+              <Link
+                to="/admin/jobs"
+                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full border ${location.pathname.startsWith('/admin/jobs') ? 'bg-red-600 text-white border-red-600' : 'text-red-700 border-red-200 hover:bg-red-50'}`}
+              >
+                Admin Jobs
+              </Link>
+              <Link
+                to="/admin/results"
+                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full border ${location.pathname.startsWith('/admin/results') ? 'bg-red-600 text-white border-red-600' : 'text-red-700 border-red-200 hover:bg-red-50'}`}
+              >
+                Admin Results
+              </Link>
+            </>
+          )}
+        </div>
+      </nav>
+
+      {isMenuOpen && (
+        <div className="md:hidden border-t border-gray-200 py-3 px-4">
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3">
               {isLoggedIn ? (
                 <button
                   onClick={() => { setIsMenuOpen(false); handleLogout() }}

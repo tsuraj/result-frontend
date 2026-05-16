@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FaSearch, FaSlidersH, FaThLarge, FaList, FaArrowRight, FaArrowUp, FaArrowDown,
-  FaBell, FaAngleLeft, FaAngleRight
+  FaBell, FaAngleLeft, FaAngleRight, FaAngleDown
 } from 'react-icons/fa'
 import JobCard from '../components/ui/JobCard'
 import { useJobs } from '../context/JobsContext'
@@ -60,6 +60,9 @@ const Home = () => {
   const [activeState, setActiveState] = useState(null)
   const [updatedAt, setUpdatedAt] = useState(null)
   const [now, setNow] = useState(() => Date.now())
+  const [categoryOpen, setCategoryOpen] = useState(false)
+  const [qualificationOpen, setQualificationOpen] = useState(false)
+  const [stateOpen, setStateOpen] = useState(false)
 
   useEffect(() => {
     const id = setTimeout(() => setDebouncedQuery(query), 300)
@@ -203,8 +206,17 @@ const Home = () => {
         {/* Left: filters */}
         <aside className="lg:col-span-3 space-y-5">
           <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <div className="text-sm font-semibold text-gray-900 mb-3">Browse by category</div>
-            <ul className="space-y-1">
+            <button
+              type="button"
+              onClick={() => setCategoryOpen(o => !o)}
+              className="w-full flex items-center justify-between py-2 text-sm font-semibold text-gray-900 lg:cursor-default lg:py-0 lg:mb-3"
+            >
+              <span>Browse by category</span>
+              <span className={`lg:hidden text-gray-400 transition-transform ${categoryOpen ? 'rotate-180' : ''}`}>
+                <FaAngleDown size={14} />
+              </span>
+            </button>
+            <ul className={`space-y-1 ${categoryOpen ? 'block' : 'hidden'} lg:block`}>
               {browseCategories.map(label => {
                 const active = activeCategory === label
                 return (
@@ -222,8 +234,17 @@ const Home = () => {
               })}
             </ul>
 
-            <div className="mt-5 text-[11px] font-semibold tracking-wider text-gray-400 uppercase">Qualification</div>
-            <ul className="mt-2 space-y-1">
+            <button
+              type="button"
+              onClick={() => setQualificationOpen(o => !o)}
+              className="w-full flex items-center justify-between py-2 border-t border-gray-100 text-sm font-semibold text-gray-900 lg:cursor-default lg:py-0 lg:mt-5 lg:border-0 lg:text-[11px] lg:font-semibold lg:tracking-wider lg:text-gray-400 lg:uppercase"
+            >
+              <span>Qualification</span>
+              <span className={`lg:hidden text-gray-400 transition-transform ${qualificationOpen ? 'rotate-180' : ''}`}>
+                <FaAngleDown size={14} />
+              </span>
+            </button>
+            <ul className={`space-y-1 ${qualificationOpen ? 'block' : 'hidden'} lg:mt-2 lg:block`}>
               {qualifications.map(label => {
                 const active = activeQualification === label
                 return (
@@ -241,8 +262,17 @@ const Home = () => {
               })}
             </ul>
 
-            <div className="mt-5 text-[11px] font-semibold tracking-wider text-gray-400 uppercase">State</div>
-            <ul className="mt-2 space-y-1">
+            <button
+              type="button"
+              onClick={() => setStateOpen(o => !o)}
+              className="w-full flex items-center justify-between py-2 border-t border-gray-100 text-sm font-semibold text-gray-900 lg:cursor-default lg:py-0 lg:mt-5 lg:border-0 lg:text-[11px] lg:font-semibold lg:tracking-wider lg:text-gray-400 lg:uppercase"
+            >
+              <span>State</span>
+              <span className={`lg:hidden text-gray-400 transition-transform ${stateOpen ? 'rotate-180' : ''}`}>
+                <FaAngleDown size={14} />
+              </span>
+            </button>
+            <ul className={`space-y-1 ${stateOpen ? 'block' : 'hidden'} lg:mt-2 lg:block`}>
               {states.map(s => {
                 const active = activeState === s
                 return (
