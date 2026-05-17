@@ -91,6 +91,12 @@ const Header = () => {
               >
                 Admin Results
               </Link>
+              <Link
+                to="/admin/pages"
+                className={`hidden md:inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${location.pathname.startsWith('/admin/pages') ? 'bg-red-50 text-red-700' : 'text-gray-700 hover:bg-gray-50'}`}
+              >
+                Admin Pages
+              </Link>
             </>
           )}
           {isLoggedIn ? (
@@ -149,6 +155,12 @@ const Header = () => {
                 className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full border ${location.pathname.startsWith('/admin/results') ? 'bg-red-600 text-white border-red-600' : 'text-red-700 border-red-200 hover:bg-red-50'}`}
               >
                 Admin Results
+              </Link>
+              <Link
+                to="/admin/pages"
+                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full border ${location.pathname.startsWith('/admin/pages') ? 'bg-red-600 text-white border-red-600' : 'text-red-700 border-red-200 hover:bg-red-50'}`}
+              >
+                Admin Pages
               </Link>
             </>
           )}

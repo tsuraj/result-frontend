@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FaRegBookmark, FaBookmark, FaArrowRight, FaUsers, FaGraduationCap, FaMapMarkerAlt, FaRegCalendarAlt, FaRegClock } from 'react-icons/fa'
+import { FaRegBookmark, FaBookmark, FaUsers, FaGraduationCap, FaMapMarkerAlt, FaRegCalendarAlt, FaRegClock } from 'react-icons/fa'
 
 const slugFromTitle = (title = '') => {
   const first = title.trim().split(/[\s\-—:]+/)[0] || ''
@@ -55,8 +55,17 @@ const JobCard = ({ job }) => {
     else status = { label: 'OPEN', tone: 'bg-green-50 text-green-700' }
   }
 
+  const toggleBookmark = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setBookmarked(b => !b)
+  }
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all p-5">
+    <Link
+      to={`/jobs/${job.id}`}
+      className="block bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all p-5"
+    >
       <div className="flex gap-4">
         <div className="hidden sm:flex flex-shrink-0 w-14 h-14 rounded-lg bg-gray-50 border border-gray-200 items-center justify-center text-xs font-bold text-gray-700">
           {slug || 'JOB'}
@@ -78,7 +87,7 @@ const JobCard = ({ job }) => {
                 </span>
               )}
               <button
-                onClick={() => setBookmarked(b => !b)}
+                onClick={toggleBookmark}
                 className="text-gray-400 hover:text-red-600 p-1"
                 aria-label="Bookmark"
               >
@@ -106,21 +115,15 @@ const JobCard = ({ job }) => {
             )}
           </div>
 
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-4">
             <span className="inline-flex items-center gap-1.5 text-sm text-gray-500">
               <FaRegCalendarAlt size={11} className="text-gray-400" />
               Last date {formatDate(job.last_date || job.lastDate) || '—'}
             </span>
-            <Link
-              to={`/jobs/${job.id}`}
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-800 hover:text-red-600"
-            >
-              View details <FaArrowRight size={11} />
-            </Link>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

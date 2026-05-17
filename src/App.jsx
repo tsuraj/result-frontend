@@ -13,6 +13,12 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import AdminJobs from './pages/AdminJobs'
 import AdminResult from './pages/AdminResult'
+import AdminPages from './pages/AdminPages'
+import AboutUs from './pages/static/AboutUs'
+import PrivacyPolicy from './pages/static/PrivacyPolicy'
+import Disclaimer from './pages/static/Disclaimer'
+import Terms from './pages/static/Terms'
+import ContactUs from './pages/static/ContactUs'
 import AnswerKeys from './pages/AnswerKeys'
 import Syllabus from './pages/Syllabus'
 import { JobsProvider } from './context/JobsContext'
@@ -36,6 +42,11 @@ function MainLayout() {
             <Route path="/jobs/:id" element={<JobDetails />} />
             <Route path="/results" element={<Results />} />
             <Route path="/results/:id" element={<ResultDetails />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/contact" element={<ContactUs />} />
             <Route path="/admit-cards" element={<AdmitCards />} />
             <Route path="/answer-keys" element={<AnswerKeys />} />
             <Route path="/syllabus" element={<Syllabus />} />
@@ -57,6 +68,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/admin/jobs" element={<AdminRoute><AdminJobs /></AdminRoute>} />
         <Route path="/admin/results" element={<AdminRoute><AdminResult /></AdminRoute>} />
+        <Route path="/admin/pages" element={<AdminRoute><AdminPages /></AdminRoute>} />
         <Route path="*" element={<JobsProvider><MainLayout /></JobsProvider>} />
       </Routes>
     </Router>
