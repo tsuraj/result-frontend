@@ -8,6 +8,8 @@ import LatestJobs from './pages/LatestJobs'
 import Results from './pages/Results'
 import ResultDetails from './pages/ResultDetails'
 import AdmitCards from './pages/AdmitCards'
+import AdmitCardDetails from './pages/AdmitCardDetails'
+import AnswerKeyDetails from './pages/AnswerKeyDetails'
 import JobDetails from './pages/JobDetails'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -48,7 +50,9 @@ function MainLayout() {
             <Route path="/terms" element={<Terms />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/admit-cards" element={<AdmitCards />} />
+            <Route path="/admit-cards/:id" element={<AdmitCardDetails />} />
             <Route path="/answer-keys" element={<AnswerKeys />} />
+            <Route path="/answer-keys/:id" element={<AnswerKeyDetails />} />
             <Route path="/syllabus" element={<Syllabus />} />
             <Route path="*" element={<div className="text-center py-20">Page Not Found</div>} />
           </Routes>

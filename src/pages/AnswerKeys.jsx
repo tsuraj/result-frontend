@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { FaArrowRight, FaRegCalendarAlt } from 'react-icons/fa'
 
 const PAGE_SIZE = 20
@@ -45,7 +46,11 @@ const AnswerKeys = () => {
 
       <div className="grid grid-cols-1 gap-4">
         {items.slice(0, visibleCount).map(item => (
-          <div key={item.id} className="bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all p-5">
+          <Link
+            key={item.id}
+            to={`/answer-keys/${item.slug || item.id}`}
+            className="block bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all p-5"
+          >
             <div className="flex gap-4">
               <div className="hidden sm:flex flex-shrink-0 w-14 h-14 rounded-lg bg-gray-50 border border-gray-200 items-center justify-center text-xs font-bold text-gray-700">
                 {slug(item.title) || 'AK'}
@@ -62,20 +67,9 @@ const AnswerKeys = () => {
                     <FaRegCalendarAlt size={11} className="text-gray-400" /> {formatDate(item.date) || '—'}
                   </span>
                 </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Download the answer key</span>
-                  <a
-                    href={item.link || '#'}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-800 hover:text-red-600"
-                  >
-                    Download <FaArrowRight size={11} />
-                  </a>
-                </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

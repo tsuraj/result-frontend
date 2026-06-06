@@ -63,7 +63,7 @@ const JobCard = ({ job }) => {
 
   return (
     <Link
-      to={`/jobs/${job.id}`}
+      to={`/jobs/${job.slug || job.id}`}
       className="block bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all p-5"
     >
       <div className="flex gap-4">

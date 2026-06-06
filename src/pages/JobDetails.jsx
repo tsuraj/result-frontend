@@ -131,7 +131,7 @@ const JobDetails = () => {
             </div>
 
             {detail.important_dates && (
-              <p className="mt-3 text-xs text-gray-500">{detail.important_dates}</p>
+              <p className="mt-3 text-xs text-gray-500 whitespace-pre-line">{detail.important_dates}</p>
             )}
 
             <div className="mt-4 flex flex-wrap gap-3">

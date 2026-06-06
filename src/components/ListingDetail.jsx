@@ -2,32 +2,21 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   FaArrowLeft, FaArrowRight, FaRegBookmark, FaBookmark, FaShareAlt,
-  FaRegCalendarAlt, FaRupeeSign, FaExternalLinkAlt
+  FaRegCalendarAlt, FaFilePdf
 } from 'react-icons/fa'
+import ReactMarkdown from 'react-markdown'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
-const formatDate = (value) => {
-  if (!value) return null
-  const d = new Date(value)
-  if (Number.isNaN(d.getTime())) return value
-  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+const API = `${import.meta.env.VITE_API_URL}/api/v1`
+
+const formatDate = (v) => {
+  if (!v) return null
+  const d = new Date(v)
+  return Number.isNaN(d.getTime()) ? v : d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-const slugFromTitle = (title = '') => {
-  const first = title.trim().split(/[\s\-—:]+/)[0] || ''
-  return first.replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase()
-}
-
-const InfoTile = ({ icon: Icon, label, value }) => {
-  if (value === null || value === undefined || value === '') return null
-  return (
-    <div className="rounded-xl border border-gray-200 bg-white px-4 py-3">
-      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
-        {Icon && <Icon size={10} className="text-gray-400" />} {label}
-      </div>
-      <div className="mt-1 text-sm font-semibold text-gray-900">{value}</div>
-    </div>
-  )
-}
+const slugFromTitle = (t = '') =>
+  (t.trim().split(/[\s\-—:]+/)[0] || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase()
 
 const Section = ({ title, children }) => (
   <section className="rounded-xl border border-gray-200 bg-white p-5">
@@ -36,61 +25,57 @@ const Section = ({ title, children }) => (
   </section>
 )
 
-const ResultDetails = () => {
+const ListingDetail = ({ resource, backTo, backLabel, slug3 }) => {
   const { id } = useParams()
-  const [result, setResult] = useState(null)
+  const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [bookmarked, setBookmarked] = useState(false)
 
   useEffect(() => {
     setLoading(true)
-    fetch(`${import.meta.env.VITE_API_URL}/api/v1/results/${id}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to load result')
+    fetch(`${API}/${resource}/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load ${resource.replace('_', ' ')}`)
         return res.json()
       })
-      .then(data => setResult(data))
-      .catch(err => setError(err.message))
+      .then(setItem)
+      .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
-  }, [id])
+  }, [id, resource])
+
+  useDocumentMeta(item?.title, item?.description?.slice(0, 160))
 
   if (loading) return <p className="text-gray-500 text-sm">Loading…</p>
   if (error) return <p className="text-red-600 text-sm">{error}</p>
-  if (!result) return <p className="text-gray-500 text-sm">Result not found.</p>
+  if (!item) return <p className="text-gray-500 text-sm">Not found.</p>
 
-  const title = result.title
-  const category = result.category
-  const date = formatDate(result.date)
-  const description = result.description
-  const importantDates = result.important_dates
-  const eligibility = result.eligibility
-  const selectionProcess = result.selection_process
-  const applicationFee = result.application_fee
-  const notificationLink = result.notification_link
-  const websiteLink = result.website_link
-  const downloadLink = result.download_link || result.link
-  const links = Array.isArray(result.links) ? result.links : []
-  const slug = slugFromTitle(title)
+  const title = item.title
+  const category = item.category
+  const date = formatDate(item.date)
+  const description = item.description
+  const importantDates = item.important_dates
+  const notificationLink = item.notification_link
+  const websiteLink = item.website_link
+  const downloadLink = item.download_link
+  const files = Array.isArray(item.files) ? item.files : []
 
   return (
     <div className="space-y-5">
-      <Link to="/results" className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
-        <FaArrowLeft size={11} /> Back to Results
+      <Link to={backTo} className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+        <FaArrowLeft size={11} /> {backLabel}
       </Link>
 
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <div className="flex items-start gap-4">
           <div className="hidden sm:flex flex-shrink-0 w-16 h-16 rounded-lg bg-gray-50 border border-gray-200 items-center justify-center text-sm font-bold text-gray-700">
-            {slug || 'RES'}
+            {slugFromTitle(title) || slug3}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">{title}</h1>
-                {category && (
-                  <p className="mt-1 text-sm text-gray-500">{category}</p>
-                )}
+                {category && <p className="mt-1 text-sm text-gray-500">{category}</p>}
               </div>
               <div className="flex items-center gap-2">
                 {date && (
@@ -98,11 +83,7 @@ const ResultDetails = () => {
                     <FaRegCalendarAlt size={10} /> {date}
                   </span>
                 )}
-                <button
-                  onClick={() => setBookmarked(b => !b)}
-                  className="p-2 text-gray-400 hover:text-red-600"
-                  aria-label="Bookmark"
-                >
+                <button onClick={() => setBookmarked((b) => !b)} className="p-2 text-gray-400 hover:text-red-600" aria-label="Bookmark">
                   {bookmarked ? <FaBookmark size={14} className="text-red-600" /> : <FaRegBookmark size={14} />}
                 </button>
                 <button className="p-2 text-gray-400 hover:text-gray-900" aria-label="Share">
@@ -123,7 +104,7 @@ const ResultDetails = () => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-red-600 text-white text-sm font-medium px-5 py-2.5 rounded-md hover:bg-red-700"
                 >
-                  Check Result <FaArrowRight size={11} />
+                  Open Official Page <FaArrowRight size={11} />
                 </a>
               )}
               {notificationLink && (
@@ -151,47 +132,30 @@ const ResultDetails = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <InfoTile icon={FaRegCalendarAlt} label="Date" value={date} />
-        <InfoTile icon={FaRupeeSign} label="Application Fee" value={applicationFee} />
-      </div>
-
       {description && (
         <Section title="Description">
-          <p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{description}</p>
+          <div className="prose prose-sm max-w-none prose-headings:text-gray-900 prose-strong:text-gray-900 prose-li:text-gray-700 prose-p:text-gray-700">
+            <ReactMarkdown>{description}</ReactMarkdown>
+          </div>
         </Section>
       )}
 
-      {eligibility && (
-        <Section title="Eligibility">
-          <p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{eligibility}</p>
-        </Section>
-      )}
-
-      {selectionProcess && (
-        <Section title="Selection Process">
-          <p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{selectionProcess}</p>
-        </Section>
-      )}
-
-      {links.length > 0 && (
-        <Section title="Important Links">
+      {files.length > 0 && (
+        <Section title="Files">
           <ul className="space-y-2">
-            {links.map((l) => (
-              <li key={l.id} className="flex items-center justify-between rounded-md bg-gray-50 border border-gray-200 px-3 py-2 text-sm">
-                <div className="min-w-0">
-                  <div className="font-medium text-gray-900 truncate">{l.title || l.url}</div>
-                  {l.link_type && (
-                    <div className="text-[10px] uppercase tracking-wide text-gray-500">{l.link_type}</div>
-                  )}
+            {files.map((f, idx) => (
+              <li key={idx} className="flex items-center justify-between rounded-md bg-gray-50 border border-gray-200 px-3 py-2 text-sm">
+                <div className="min-w-0 flex items-center gap-2">
+                  <FaFilePdf className="text-red-600 flex-shrink-0" />
+                  <div className="truncate text-gray-900 font-medium">{f.title || f.url}</div>
                 </div>
                 <a
-                  href={l.url}
+                  href={f.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700"
+                  className="ml-3 inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700 whitespace-nowrap"
                 >
-                  Open <FaExternalLinkAlt size={10} />
+                  Download <FaArrowRight size={10} />
                 </a>
               </li>
             ))}
@@ -202,4 +166,4 @@ const ResultDetails = () => {
   )
 }
 
-export default ResultDetails
+export default ListingDetail

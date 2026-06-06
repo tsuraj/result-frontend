@@ -7,7 +7,6 @@ const emptyJob = {
   title: '',
   organization: '',
   last_date: '',
-  link: '',
 }
 
 const emptyDetail = {
@@ -105,7 +104,6 @@ const AdminJobs = () => {
         title: full.title || '',
         organization: full.organization || '',
         last_date: toDateInput(full.last_date),
-        link: full.link || '',
       })
       const d = full.job_detail || {}
       setDetailForm({
@@ -240,7 +238,6 @@ const AdminJobs = () => {
             {input('Last Date', jobForm.last_date, (v) =>
               setJobForm({ ...jobForm, last_date: v }), 'date'
             )}
-            {input('Link', jobForm.link, (v) => setJobForm({ ...jobForm, link: v }))}
           </div>
 
           <h3 className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-500">
