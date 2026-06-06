@@ -45,8 +45,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4 text-yellow-400">Hire Sarkar</h3>
             <p className="text-gray-300 mb-4">
-              India's No.1 Portal for Government Job Updates. Get latest exam notifications, 
-              results, admit cards and more.
+               Get the latest government job notifications, exam results, admit cards, answer keys, and admission updates from across India.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-300 hover:text-white">
