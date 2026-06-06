@@ -4,6 +4,13 @@ import {
   FaArrowLeft, FaArrowRight, FaRegBookmark, FaBookmark, FaShareAlt,
   FaMapMarkerAlt, FaRupeeSign, FaUsers, FaBriefcase, FaRegCalendarAlt, FaRegClock
 } from 'react-icons/fa'
+import useDocumentMeta, { SITE_URL, SITE_NAME } from '../hooks/useDocumentMeta'
+
+const toIso = (value) => {
+  if (!value) return undefined
+  const d = new Date(value)
+  return Number.isNaN(d.getTime()) ? undefined : d.toISOString()
+}
 
 const formatDate = (value) => {
   if (!value) return null
@@ -61,6 +68,47 @@ const JobDetails = () => {
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
   }, [id])
+
+  // SEO meta + Google "JobPosting" structured data (must run before early returns)
+  const md = job?.job_detail || {}
+  const metaTitle = md.title || job?.title
+  const metaOrg = md.organization || job?.organization
+  const metaDesc =
+    (md.description || '').replace(/\s+/g, ' ').trim().slice(0, 160) ||
+    (metaTitle
+      ? `${metaTitle}${metaOrg ? ` by ${metaOrg}` : ''} — eligibility, important dates, fees and how to apply online on Hire Sarkar.`
+      : undefined)
+
+  const jobJsonLd = job
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'JobPosting',
+        title: metaTitle,
+        description: md.description || metaDesc || metaTitle,
+        datePosted: toIso(job.created_at || md.start_date),
+        validThrough: toIso(md.last_date || job.last_date),
+        employmentType: md.type ? String(md.type).toUpperCase() : undefined,
+        hiringOrganization: metaOrg
+          ? { '@type': 'Organization', name: metaOrg }
+          : { '@type': 'Organization', name: SITE_NAME, sameAs: SITE_URL },
+        jobLocation: {
+          '@type': 'Place',
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: md.location || undefined,
+            addressCountry: 'IN',
+          },
+        },
+        url: `${SITE_URL}/jobs/${id}`,
+        directApply: Boolean(md.apply_link || job.link),
+      }
+    : null
+
+  useDocumentMeta(metaTitle, metaDesc, {
+    type: 'article',
+    canonical: `/jobs/${id}`,
+    jsonLd: jobJsonLd,
+  })
 
   if (loading) return <p className="text-gray-500 text-sm">Loading…</p>
   if (error) return <p className="text-red-600 text-sm">{error}</p>

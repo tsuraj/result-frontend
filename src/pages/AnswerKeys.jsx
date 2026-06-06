@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FaArrowRight, FaRegCalendarAlt } from 'react-icons/fa'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
 const PAGE_SIZE = 20
 
@@ -14,6 +15,11 @@ const formatDate = (dateStr) => {
 }
 
 const AnswerKeys = () => {
+  useDocumentMeta(
+    'Answer Keys 2026 — Government Exam Answer Keys',
+    'Download official and provisional answer keys for the latest government exams — SSC, UPSC, Railway, Banking and State Govt. Compare responses and raise objections on time.',
+    { canonical: '/answer-keys' }
+  )
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')

@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FaArrowRight, FaRegCalendarAlt } from 'react-icons/fa'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
 const PAGE_SIZE = 20
 
 const slug = (s = '') => (s.trim().split(/[\s\-—:]+/)[0] || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase()
 
 const Syllabus = () => {
+  useDocumentMeta(
+    'Exam Syllabus 2026 — Government Exam Syllabus & Pattern',
+    'Get the latest syllabus and exam pattern for government exams — SSC, UPSC, Railway, Banking and State Govt. Topic-wise syllabus to plan your preparation.',
+    { canonical: '/syllabus' }
+  )
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')

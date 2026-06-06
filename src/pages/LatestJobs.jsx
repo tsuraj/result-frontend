@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import JobCard from '../components/ui/JobCard'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
 const PAGE_SIZE = 20
 
 const LatestJobs = () => {
+  useDocumentMeta(
+    'Latest Government Jobs 2026 — Apply Online',
+    'Browse the latest Sarkari (government) job openings across India — SSC, UPSC, Railway, Banking, Defence and State Govt vacancies with eligibility, last dates and apply links.',
+    { canonical: '/latest-jobs' }
+  )
   const [jobs, setJobs] = useState([])
   const [meta, setMeta] = useState({ page: 1, total: 0, total_pages: 1 })
   const [page, setPage] = useState(1)

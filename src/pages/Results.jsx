@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import ResultCard from '../components/ui/ResultCard'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
 const PAGE_SIZE = 20
 
 const Results = () => {
+  useDocumentMeta(
+    'Sarkari Results 2026 — Latest Government Exam Results',
+    'Check the latest Sarkari results and government exam results for SSC, UPSC, Railway, Banking and State Govt exams. Fast, reliable result updates with direct links.',
+    { canonical: '/results' }
+  )
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')

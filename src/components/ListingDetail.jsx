@@ -44,7 +44,11 @@ const ListingDetail = ({ resource, backTo, backLabel, slug3 }) => {
       .finally(() => setLoading(false))
   }, [id, resource])
 
-  useDocumentMeta(item?.title, item?.description?.slice(0, 160))
+  useDocumentMeta(
+    item?.title,
+    item?.description?.replace(/\s+/g, ' ').trim().slice(0, 160),
+    { type: 'article', canonical: backTo ? `${backTo}/${id}` : undefined }
+  )
 
   if (loading) return <p className="text-gray-500 text-sm">Loading…</p>
   if (error) return <p className="text-red-600 text-sm">{error}</p>

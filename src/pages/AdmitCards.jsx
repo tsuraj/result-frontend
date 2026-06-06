@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 import AdmitCard from '../components/ui/AdmitCard'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
 const PAGE_SIZE = 20
 
 const AdmitCards = () => {
+  useDocumentMeta(
+    'Admit Cards 2026 — Download Government Exam Hall Tickets',
+    'Download the latest admit cards and hall tickets for government exams — SSC, UPSC, Railway, Banking and State Govt recruitment. Direct download links and exam dates.',
+    { canonical: '/admit-cards' }
+  )
   const [admitCards, setAdmitCards] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')

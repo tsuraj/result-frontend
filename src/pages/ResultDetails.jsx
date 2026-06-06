@@ -4,6 +4,7 @@ import {
   FaArrowLeft, FaArrowRight, FaRegBookmark, FaBookmark, FaShareAlt,
   FaRegCalendarAlt, FaRupeeSign, FaExternalLinkAlt
 } from 'react-icons/fa'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
 const formatDate = (value) => {
   if (!value) return null
@@ -54,6 +55,13 @@ const ResultDetails = () => {
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
   }, [id])
+
+  useDocumentMeta(
+    result?.title,
+    (result?.description || '').replace(/\s+/g, ' ').trim().slice(0, 160) ||
+      (result?.title ? `${result.title} — check result, important dates and download links on Hire Sarkar.` : undefined),
+    { type: 'article', canonical: `/results/${id}` }
+  )
 
   if (loading) return <p className="text-gray-500 text-sm">Loading…</p>
   if (error) return <p className="text-red-600 text-sm">{error}</p>
