@@ -91,7 +91,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <FaMobileAlt className="mr-2 text-yellow-400" />
-                <span>+91 9876543210</span>
+                <span>+91 ********</span>
               </li>
             </ul>
             <div className="mt-4">
