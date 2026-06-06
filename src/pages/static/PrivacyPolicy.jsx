@@ -1,11 +1,11 @@
-// Meta title: Privacy Policy | RojgarResult
+// Meta title: Privacy Policy | HireSarkar
 import StaticPage from '../../components/StaticPage'
 
 const PrivacyPolicy = () => (
   <StaticPage
     slug="privacy"
     fallbackTitle="Privacy Policy"
-    fallbackDescription="How RojgarResult handles cookies, analytics, basic visitor data and third-party links."
+    fallbackDescription="How HireSarkar handles cookies, analytics, basic visitor data and third-party links."
   />
 )
 

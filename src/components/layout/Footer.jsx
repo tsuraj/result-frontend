@@ -43,7 +43,7 @@ const Footer = () => {
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4 text-yellow-400">Rojgar Result</h3>
+            <h3 className="text-xl font-bold mb-4 text-yellow-400">Hire Sarkar</h3>
             <p className="text-gray-300 mb-4">
               India's No.1 Portal for Government Job Updates. Get latest exam notifications, 
               results, admit cards and more.
@@ -87,7 +87,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li className="flex items-center">
                 <FaEnvelope className="mr-2 text-yellow-400" />
-                <span>contact@rojgarresult.com</span>
+                <span>hiresarkar590@gmail.com</span>
               </li>
               <li className="flex items-center">
                 <FaMobileAlt className="mr-2 text-yellow-400" />
@@ -109,7 +109,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-400">
-          <p>&copy; {currentYear} Rojgar Result. All Rights Reserved.</p>
+          <p>&copy; {currentYear} Hire Sarkar. All Rights Reserved.</p>
           <p className="mt-2 text-sm">
             Disclaimer: This website is not affiliated with any government organization. 
             We provide information about government job notifications.

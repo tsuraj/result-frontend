@@ -44,7 +44,7 @@ const Header = () => {
           <div className="bg-red-600 text-white font-bold text-lg w-10 h-10 flex items-center justify-center rounded">RR</div>
           <div className="leading-tight">
             <div className="text-lg font-bold text-gray-900">
-              Rojgar<span className="text-red-600">Result</span>
+              Hire<span className="text-red-600">Sarkar</span>
             </div>
             <div className="text-[10px] font-semibold tracking-wide text-gray-500 flex items-center gap-1">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500" />

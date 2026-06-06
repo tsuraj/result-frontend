@@ -1,4 +1,4 @@
-// Meta title: Admin — Pages | RojgarResult
+// Meta title: Admin — Pages | HireSarkar
 import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { authFetch } from '../services/authFetch'

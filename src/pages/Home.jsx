@@ -461,7 +461,7 @@ const Home = () => {
       {/* Simple footer note */}
       <div className="container border-t border-gray-200 py-6 mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-gray-500">
         <span>
-          © {new Date().getFullYear()} RojgarResult · Independent job-listing service · Not affiliated with any government body
+          © {new Date().getFullYear()} HireSarkar · Independent job-listing service · Not affiliated with any government body
         </span>
         <span className="flex items-center gap-4">
           <Link to="/about" className="hover:text-gray-800">About</Link>

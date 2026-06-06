@@ -1,4 +1,4 @@
-// Meta title: Contact Us | RojgarResult
+// Meta title: Contact Us | HireSarkar
 import { useState } from 'react'
 import { FaEnvelope, FaBriefcase, FaFacebook, FaTwitter, FaInstagram, FaYoutube, FaPaperPlane } from 'react-icons/fa'
 import StaticPage from '../../components/StaticPage'
@@ -37,7 +37,7 @@ const ContactUs = () => {
     <StaticPage
       slug="contact"
       fallbackTitle="Contact Us"
-      fallbackDescription="Reach RojgarResult — questions, corrections, and business inquiries."
+      fallbackDescription="Reach HireSarkar — questions, corrections, and business inquiries."
     >
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
@@ -46,7 +46,7 @@ const ContactUs = () => {
             <h3 className="font-semibold text-gray-900">Email</h3>
           </div>
           <p className="text-sm text-gray-600">For questions and content corrections:</p>
-          <a href="mailto:contact@rojgarresult.example" className="text-sm font-medium text-red-600 hover:text-red-700">contact@rojgarresult.example</a>
+          <a href="mailto:hiresarkar590@gmail.com" className="text-sm font-medium text-red-600 hover:text-red-700">hiresarkar590@gmail.com</a>
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
@@ -55,7 +55,7 @@ const ContactUs = () => {
             <h3 className="font-semibold text-gray-900">Business Inquiries</h3>
           </div>
           <p className="text-sm text-gray-600">Partnerships, advertising, collaborations:</p>
-          <a href="mailto:business@rojgarresult.example" className="text-sm font-medium text-red-600 hover:text-red-700">business@rojgarresult.example</a>
+          <a href="mailto:hiresarkar590@gmail.com" className="text-sm font-medium text-red-600 hover:text-red-700">hiresarkar590@gmail.com</a>
         </div>
       </div>
 
