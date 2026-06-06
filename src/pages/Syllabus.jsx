@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { FaArrowRight, FaRegCalendarAlt } from 'react-icons/fa'
 
 const PAGE_SIZE = 20
@@ -59,14 +60,12 @@ const Syllabus = () => {
                 </div>
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-sm text-gray-500">View detailed syllabus</span>
-                  <a
-                    href={item.link || '#'}
-                    target="_blank"
-                    rel="noreferrer"
+                  <Link
+                    to={`/syllabus/${item.slug || item.id}`}
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-800 hover:text-red-600"
                   >
                     View <FaArrowRight size={11} />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

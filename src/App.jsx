@@ -16,6 +16,9 @@ import Signup from './pages/Signup'
 import AdminJobs from './pages/AdminJobs'
 import AdminResult from './pages/AdminResult'
 import AdminPages from './pages/AdminPages'
+import AdminAdmitCards from './pages/AdminAdmitCards'
+import AdminAnswerKeys from './pages/AdminAnswerKeys'
+import AdminSyllabus from './pages/AdminSyllabus'
 import AboutUs from './pages/static/AboutUs'
 import PrivacyPolicy from './pages/static/PrivacyPolicy'
 import Disclaimer from './pages/static/Disclaimer'
@@ -23,6 +26,7 @@ import Terms from './pages/static/Terms'
 import ContactUs from './pages/static/ContactUs'
 import AnswerKeys from './pages/AnswerKeys'
 import Syllabus from './pages/Syllabus'
+import SyllabusDetails from './pages/SyllabusDetails'
 import { JobsProvider } from './context/JobsContext'
 import AdminRoute from './components/AdminRoute'
 
@@ -54,6 +58,7 @@ function MainLayout() {
             <Route path="/answer-keys" element={<AnswerKeys />} />
             <Route path="/answer-keys/:id" element={<AnswerKeyDetails />} />
             <Route path="/syllabus" element={<Syllabus />} />
+            <Route path="/syllabus/:id" element={<SyllabusDetails />} />
             <Route path="*" element={<div className="text-center py-20">Page Not Found</div>} />
           </Routes>
         </div>
@@ -72,6 +77,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/admin/jobs" element={<AdminRoute><AdminJobs /></AdminRoute>} />
         <Route path="/admin/results" element={<AdminRoute><AdminResult /></AdminRoute>} />
+        <Route path="/admin/admit-cards" element={<AdminRoute><AdminAdmitCards /></AdminRoute>} />
+        <Route path="/admin/answer-keys" element={<AdminRoute><AdminAnswerKeys /></AdminRoute>} />
+        <Route path="/admin/syllabus" element={<AdminRoute><AdminSyllabus /></AdminRoute>} />
         <Route path="/admin/pages" element={<AdminRoute><AdminPages /></AdminRoute>} />
         <Route path="*" element={<JobsProvider><MainLayout /></JobsProvider>} />
       </Routes>

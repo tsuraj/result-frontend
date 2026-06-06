@@ -34,6 +34,15 @@ const Header = () => {
     { name: 'Syllabus', path: '/syllabus' },
   ]
 
+  const adminLinks = [
+    { name: 'Admin Jobs', path: '/admin/jobs' },
+    { name: 'Admin Results', path: '/admin/results' },
+    { name: 'Admin Admit Cards', path: '/admin/admit-cards' },
+    { name: 'Admin Answer Keys', path: '/admin/answer-keys' },
+    { name: 'Admin Syllabus', path: '/admin/syllabus' },
+    { name: 'Admin Pages', path: '/admin/pages' },
+  ]
+
   const isActive = (path) =>
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path)
 
@@ -77,28 +86,15 @@ const Header = () => {
           <button className="hidden md:inline-flex p-2 text-gray-600 hover:text-gray-900" aria-label="Bookmarks">
             <FaRegBookmark size={16} />
           </button>
-          {isAdmin && (
-            <>
-              <Link
-                to="/admin/jobs"
-                className={`hidden md:inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${location.pathname.startsWith('/admin/jobs') ? 'bg-red-50 text-red-700' : 'text-gray-700 hover:bg-gray-50'}`}
-              >
-                Admin Jobs
-              </Link>
-              <Link
-                to="/admin/results"
-                className={`hidden md:inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${location.pathname.startsWith('/admin/results') ? 'bg-red-50 text-red-700' : 'text-gray-700 hover:bg-gray-50'}`}
-              >
-                Admin Results
-              </Link>
-              <Link
-                to="/admin/pages"
-                className={`hidden md:inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${location.pathname.startsWith('/admin/pages') ? 'bg-red-50 text-red-700' : 'text-gray-700 hover:bg-gray-50'}`}
-              >
-                Admin Pages
-              </Link>
-            </>
-          )}
+          {isAdmin && adminLinks.map(item => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`hidden md:inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${location.pathname.startsWith(item.path) ? 'bg-red-50 text-red-700' : 'text-gray-700 hover:bg-gray-50'}`}
+            >
+              {item.name}
+            </Link>
+          ))}
           {isLoggedIn ? (
             <button
               onClick={handleLogout}
@@ -142,28 +138,15 @@ const Header = () => {
               </Link>
             )
           })}
-          {isAdmin && (
-            <>
-              <Link
-                to="/admin/jobs"
-                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full border ${location.pathname.startsWith('/admin/jobs') ? 'bg-red-600 text-white border-red-600' : 'text-red-700 border-red-200 hover:bg-red-50'}`}
-              >
-                Admin Jobs
-              </Link>
-              <Link
-                to="/admin/results"
-                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full border ${location.pathname.startsWith('/admin/results') ? 'bg-red-600 text-white border-red-600' : 'text-red-700 border-red-200 hover:bg-red-50'}`}
-              >
-                Admin Results
-              </Link>
-              <Link
-                to="/admin/pages"
-                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full border ${location.pathname.startsWith('/admin/pages') ? 'bg-red-600 text-white border-red-600' : 'text-red-700 border-red-200 hover:bg-red-50'}`}
-              >
-                Admin Pages
-              </Link>
-            </>
-          )}
+          {isAdmin && adminLinks.map(item => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-full border ${location.pathname.startsWith(item.path) ? 'bg-red-600 text-white border-red-600' : 'text-red-700 border-red-200 hover:bg-red-50'}`}
+            >
+              {item.name}
+            </Link>
+          ))}
         </div>
       </nav>
 
