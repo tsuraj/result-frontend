@@ -5,6 +5,7 @@ import {
   FaRegCalendarAlt, FaRupeeSign, FaExternalLinkAlt
 } from 'react-icons/fa'
 import useDocumentMeta from '../hooks/useDocumentMeta'
+import { breadcrumb } from '../lib/jsonld'
 
 const formatDate = (value) => {
   if (!value) return null
@@ -60,7 +61,17 @@ const SyllabusDetails = () => {
     item?.title,
     (item?.description || '').replace(/\s+/g, ' ').trim().slice(0, 160) ||
       (item?.title ? `${item.title} — detailed syllabus and exam pattern on Hire Sarkar.` : undefined),
-    { type: 'article', canonical: `/syllabus/${id}` }
+    {
+      type: 'article',
+      canonical: `/syllabus/${id}`,
+      jsonLd: item
+        ? breadcrumb([
+            { name: 'Home', url: '/' },
+            { name: 'Syllabus', url: '/syllabus' },
+            { name: item.title, url: `/syllabus/${id}` },
+          ])
+        : null,
+    }
   )
 
   if (loading) return <p className="text-gray-500 text-sm">Loading…</p>

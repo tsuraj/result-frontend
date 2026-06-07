@@ -5,6 +5,7 @@ import {
   FaMapMarkerAlt, FaRupeeSign, FaUsers, FaBriefcase, FaRegCalendarAlt, FaRegClock
 } from 'react-icons/fa'
 import useDocumentMeta, { SITE_URL, SITE_NAME } from '../hooks/useDocumentMeta'
+import { breadcrumb } from '../lib/jsonld'
 
 const toIso = (value) => {
   if (!value) return undefined
@@ -104,10 +105,21 @@ const JobDetails = () => {
       }
     : null
 
+  const jsonLd = job
+    ? [
+        jobJsonLd,
+        breadcrumb([
+          { name: 'Home', url: '/' },
+          { name: 'Latest Jobs', url: '/latest-jobs' },
+          { name: metaTitle, url: `/jobs/${id}` },
+        ]),
+      ]
+    : null
+
   useDocumentMeta(metaTitle, metaDesc, {
     type: 'article',
     canonical: `/jobs/${id}`,
-    jsonLd: jobJsonLd,
+    jsonLd,
   })
 
   if (loading) return <p className="text-gray-500 text-sm">Loading…</p>

@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fa'
 import ReactMarkdown from 'react-markdown'
 import useDocumentMeta from '../hooks/useDocumentMeta'
+import { breadcrumb } from '../lib/jsonld'
 
 const API = `${import.meta.env.VITE_API_URL}/api/v1`
 
@@ -47,7 +48,17 @@ const ListingDetail = ({ resource, backTo, backLabel, slug3 }) => {
   useDocumentMeta(
     item?.title,
     item?.description?.replace(/\s+/g, ' ').trim().slice(0, 160),
-    { type: 'article', canonical: backTo ? `${backTo}/${id}` : undefined }
+    {
+      type: 'article',
+      canonical: backTo ? `${backTo}/${id}` : undefined,
+      jsonLd: item
+        ? breadcrumb([
+            { name: 'Home', url: '/' },
+            { name: backLabel || resource?.replace(/_/g, ' '), url: backTo },
+            { name: item.title, url: backTo ? `${backTo}/${id}` : undefined },
+          ])
+        : null,
+    }
   )
 
   if (loading) return <p className="text-gray-500 text-sm">Loading…</p>

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 const JobsContext = createContext({
   stats: { total_active: 0, posted_today: 0, closing_this_week: 0 },
+  latestJob: null,
   loading: true,
   updatedAt: null,
   refresh: () => {}
@@ -9,6 +10,7 @@ const JobsContext = createContext({
 
 export const JobsProvider = ({ children }) => {
   const [stats, setStats] = useState({ total_active: 0, posted_today: 0, closing_this_week: 0 })
+  const [latestJob, setLatestJob] = useState(null)
   const [loading, setLoading] = useState(true)
   const [updatedAt, setUpdatedAt] = useState(null)
 
@@ -25,6 +27,9 @@ export const JobsProvider = ({ children }) => {
           })
           setUpdatedAt(Date.now())
         }
+        if (data && Array.isArray(data.jobs)) {
+          setLatestJob(data.jobs[0] || null)
+        }
       })
       .catch(() => {})
       .finally(() => setLoading(false))
@@ -33,7 +38,7 @@ export const JobsProvider = ({ children }) => {
   useEffect(() => { refresh() }, [])
 
   return (
-    <JobsContext.Provider value={{ stats, loading, updatedAt, refresh }}>
+    <JobsContext.Provider value={{ stats, latestJob, loading, updatedAt, refresh }}>
       {children}
     </JobsContext.Provider>
   )

@@ -48,7 +48,7 @@ const trendingToday = [
 
 const Home = () => {
   useDocumentMeta(
-    "Hire Sarkar - India's No.1 Government Job Portal",
+    'Hire Sarkar — Latest Government Jobs, Results & Admit Cards',
     'Hire Sarkar brings you the latest Sarkari jobs, results, admit cards, answer keys and syllabus in one place. Fast, reliable government recruitment updates for SSC, UPSC, Railway, Banking and State Govt exams.',
     { canonical: '/' }
   )

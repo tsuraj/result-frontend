@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/poppins": "^5.2.7",
     "@tailwindcss/typography": "^0.5.19",
     "axios": "^1.16.0",
     "react": "^18.2.0",

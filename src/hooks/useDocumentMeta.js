@@ -44,7 +44,7 @@ export default function useDocumentMeta(title, description, options = {}) {
   useEffect(() => {
     const fullTitle = title
       ? (title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`)
-      : `${SITE_NAME} - India's No.1 Government Job Portal`
+      : `${SITE_NAME} — Latest Government Jobs, Results & Admit Cards`
     document.title = fullTitle
 
     const canonicalUrl = canonical
