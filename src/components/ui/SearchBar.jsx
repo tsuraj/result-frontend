@@ -1,20 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { FaSearch, FaArrowRight } from 'react-icons/fa'
-import { searchJobs } from '../../services/searchApi'
 
 const SearchBar = () => {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const [query, setQuery] = useState(searchParams.get('q') || '')
 
-  const handleSearch = async (e) => {
+  // Keep the box in sync with the URL (e.g. when landing on /latest-jobs?q=…).
+  useEffect(() => {
+    setQuery(searchParams.get('q') || '')
+  }, [searchParams])
+
+  const handleSearch = (e) => {
     e.preventDefault()
-    if (!query.trim()) return
-    try {
-      const response = await searchJobs(query)
-      setResults(response.data)
-    } catch (error) {
-      console.error('Search error:', error)
-    }
+    const q = query.trim()
+    if (!q) return
+    navigate(`/latest-jobs?q=${encodeURIComponent(q)}`)
   }
 
   return (
@@ -25,7 +27,7 @@ const SearchBar = () => {
             <FaSearch className="text-gray-400" size={13} />
             <input
               type="text"
-              placeholder="Search jobs, exams, results…"
+              placeholder="Search jobs by title or organization…"
               className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder-gray-400"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -38,17 +40,6 @@ const SearchBar = () => {
             Search <FaArrowRight size={11} />
           </button>
         </form>
-
-        {results.length > 0 && (
-          <div className="max-w-3xl mx-auto mt-3 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            {results.map(job => (
-              <div key={job.id} className="px-4 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                <h3 className="text-sm font-semibold text-gray-900">{job.title}</h3>
-                <p className="text-xs text-gray-500 mt-0.5">{job.organization}</p>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   )

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FaSearch, FaSlidersH, FaThLarge, FaList, FaArrowRight, FaArrowUp, FaArrowDown,
-  FaBell, FaAngleLeft, FaAngleRight, FaAngleDown
+  FaBell, FaAngleLeft, FaAngleRight, FaAngleDown, FaTimes
 } from 'react-icons/fa'
 import JobCard from '../components/ui/JobCard'
 import { useJobs } from '../context/JobsContext'
@@ -46,6 +46,15 @@ const trendingToday = [
   { title: 'CTET December 2026 notification expected', searches: '890', up: true }
 ]
 
+const ActiveChip = ({ label, onClear }) => (
+  <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full">
+    {label}
+    <button onClick={onClear} className="text-gray-400 hover:text-gray-700" aria-label={`Remove ${label}`}>
+      <FaTimes size={9} />
+    </button>
+  </span>
+)
+
 const Home = () => {
   useDocumentMeta(
     'Hire Sarkar — Latest Government Jobs, Results & Admit Cards',
@@ -60,6 +69,7 @@ const Home = () => {
   const [query, setQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const [view, setView] = useState('list')
+  const [sort, setSort] = useState('latest')
   const [activeChip, setActiveChip] = useState('All')
   const [activeCategory, setActiveCategory] = useState('All Jobs')
   const [activeQualification, setActiveQualification] = useState(null)
@@ -82,7 +92,7 @@ const Home = () => {
 
   useEffect(() => {
     setPage(1)
-  }, [debouncedQuery, activeChip, activeCategory, activeQualification, activeState])
+  }, [debouncedQuery, activeChip, activeCategory, activeQualification, activeState, sort])
 
   useEffect(() => {
     const p = new URLSearchParams()
@@ -102,9 +112,11 @@ const Home = () => {
     if (!p.has('title_like') && activeQualification && qualToTitleLike[activeQualification]) {
       p.set('title_like', qualToTitleLike[activeQualification])
     }
-    if (activeState && activeState !== 'All India' && !p.has('organization_like')) {
-      p.set('organization_like', activeState)
+    if (activeState && activeState !== 'All India') {
+      p.set('location_like', activeState)
     }
+
+    if (sort && sort !== 'latest') p.set('sort', sort)
 
     setLoading(true)
     fetch(`${import.meta.env.VITE_API_URL}/api/v1/jobs?${p.toString()}`)
@@ -118,7 +130,7 @@ const Home = () => {
         setJobs([])
       })
       .finally(() => setLoading(false))
-  }, [page, debouncedQuery, activeChip, activeCategory, activeQualification, activeState])
+  }, [page, debouncedQuery, activeChip, activeCategory, activeQualification, activeState, sort])
 
   const relativeUpdated = () => {
     if (!updatedAt) return '—'
@@ -328,9 +340,15 @@ const Home = () => {
               <button className="inline-flex items-center gap-2 text-sm border border-gray-300 rounded-md px-3 py-2 text-gray-700 hover:bg-gray-50">
                 <FaSlidersH size={12} /> Filters
               </button>
-              <button className="inline-flex items-center gap-2 text-sm border border-gray-300 rounded-md px-3 py-2 text-gray-700 hover:bg-gray-50">
-                Sort: <span className="font-medium">Latest</span>
-              </button>
+              <select
+                value={sort}
+                onChange={e => setSort(e.target.value)}
+                aria-label="Sort jobs"
+                className="text-sm border border-gray-300 rounded-md px-3 py-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus:border-gray-900 cursor-pointer"
+              >
+                <option value="latest">Sort: Latest</option>
+                <option value="closing">Sort: Closing soon</option>
+              </select>
               <div className="inline-flex border border-gray-300 rounded-md overflow-hidden">
                 <button
                   onClick={() => setView('list')}
@@ -349,6 +367,20 @@ const Home = () => {
               </div>
             </div>
           </div>
+
+          {(query || activeChip !== 'All' || activeCategory !== 'All Jobs' || activeQualification || activeState) && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs text-gray-500">Active filters:</span>
+              {query && <ActiveChip label={`“${query}”`} onClear={() => setQuery('')} />}
+              {activeChip !== 'All' && <ActiveChip label={activeChip} onClear={() => setActiveChip('All')} />}
+              {activeCategory !== 'All Jobs' && <ActiveChip label={activeCategory} onClear={() => setActiveCategory('All Jobs')} />}
+              {activeQualification && <ActiveChip label={activeQualification} onClear={() => setActiveQualification(null)} />}
+              {activeState && <ActiveChip label={activeState} onClear={() => setActiveState(null)} />}
+              <button onClick={clearFilters} className="ml-1 text-xs font-semibold text-red-600 hover:underline">
+                Clear all
+              </button>
+            </div>
+          )}
 
           <div className={view === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-4'}>
             {jobs.map(job => (

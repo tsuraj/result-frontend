@@ -50,7 +50,7 @@ const Header = () => {
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="container flex items-center justify-between py-3">
         <Link to="/" className="flex items-center gap-3">
-          <div className="bg-red-600 text-white font-bold text-lg w-10 h-10 flex items-center justify-center rounded">RR</div>
+          <div className="bg-red-600 text-white font-bold text-lg w-10 h-10 flex items-center justify-center rounded">HS</div>
           <div className="leading-tight">
             <div className="text-lg font-bold text-gray-900">
               Hire<span className="text-red-600">Sarkar</span>
