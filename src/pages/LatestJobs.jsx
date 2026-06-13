@@ -1,14 +1,24 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { FaArrowRight, FaTimes } from 'react-icons/fa'
+import { FaArrowRight, FaTimes, FaSearch } from 'react-icons/fa'
 import JobCard from '../components/ui/JobCard'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 
 const PAGE_SIZE = 20
 
 const LatestJobs = () => {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const q = (searchParams.get('q') || '').trim()
+  const [term, setTerm] = useState(searchParams.get('q') || '')
+
+  // Keep the input in sync if the URL query changes (e.g. via "Clear search").
+  useEffect(() => { setTerm(searchParams.get('q') || '') }, [searchParams])
+
+  const submitSearch = (e) => {
+    e.preventDefault()
+    const next = term.trim()
+    setSearchParams(next ? { q: next } : {})
+  }
 
   useDocumentMeta(
     q ? `Search results for “${q}”` : 'Latest Government Jobs 2026 — Apply Online',
@@ -53,6 +63,25 @@ const LatestJobs = () => {
 
   return (
     <div className="max-w-3xl mx-auto">
+      <form onSubmit={submitSearch} className="mb-5 flex items-center gap-2 bg-white border border-gray-300 rounded-full px-4 py-2.5 shadow-sm focus-within:border-gray-900">
+        <FaSearch className="text-gray-400" size={13} />
+        <input
+          type="text"
+          value={term}
+          onChange={e => setTerm(e.target.value)}
+          placeholder="Search jobs by title or organization…"
+          className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder-gray-400"
+        />
+        {term && (
+          <button type="button" onClick={() => { setTerm(''); setSearchParams({}) }} className="text-gray-400 hover:text-gray-700" aria-label="Clear search">
+            <FaTimes size={12} />
+          </button>
+        )}
+        <button type="submit" className="bg-gray-900 text-white text-sm font-medium px-4 py-1.5 rounded-full hover:bg-black">
+          Search
+        </button>
+      </form>
+
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
           {q ? <>Search results for “{q}”</> : 'Latest Government Jobs'}

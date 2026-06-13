@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import NotificationBar from './components/layout/NotificationBar'
-import SearchBar from './components/ui/SearchBar'
 import { JobsProvider } from './context/JobsContext'
 import AdminRoute from './components/AdminRoute'
 import Analytics from './components/Analytics'
@@ -48,7 +47,6 @@ function MainLayout() {
     <div className="flex flex-col min-h-screen">
       <NotificationBar />
       <Header />
-      {!isHome && <SearchBar />}
 
       <main className="flex-grow py-6">
         <div className={containerWide ? '' : 'container'}>
