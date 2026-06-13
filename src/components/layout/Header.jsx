@@ -32,6 +32,7 @@ const Header = () => {
     { name: 'Admit Card', path: '/admit-cards' },
     { name: 'Answer Key', path: '/answer-keys' },
     { name: 'Syllabus', path: '/syllabus' },
+    { name: 'Updates', path: '/updates' },
   ]
 
   const adminLinks = [
@@ -40,6 +41,7 @@ const Header = () => {
     { name: 'Admin Admit Cards', path: '/admin/admit-cards' },
     { name: 'Admin Answer Keys', path: '/admin/answer-keys' },
     { name: 'Admin Syllabus', path: '/admin/syllabus' },
+    { name: 'Admin Updates', path: '/admin/updates' },
     { name: 'Admin Pages', path: '/admin/pages' },
   ]
 

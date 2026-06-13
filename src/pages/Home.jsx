@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  FaSearch, FaSlidersH, FaThLarge, FaList, FaArrowRight, FaArrowUp, FaArrowDown,
+  FaSearch, FaSlidersH, FaThLarge, FaList, FaArrowRight,
   FaBell, FaAngleLeft, FaAngleRight, FaAngleDown, FaTimes
 } from 'react-icons/fa'
 import JobCard from '../components/ui/JobCard'
@@ -38,14 +38,6 @@ const closingThisWeekStatic = [
   { name: 'SSC CGL', sub: 'Window closes', days: '11d' }
 ]
 
-const trendingToday = [
-  { title: 'RRB NTPC notification released — apply by month end', searches: '2.4k', up: true },
-  { title: 'SSC CGL exam dates announced for August 2026', searches: '1.8k', up: true },
-  { title: 'SBI PO 2026 — 2,500 vacancies open', searches: '1.5k', up: true },
-  { title: 'UPSC Civil Services Prelims admit card released', searches: '1.1k', up: false },
-  { title: 'CTET December 2026 notification expected', searches: '890', up: true }
-]
-
 const ActiveChip = ({ label, onClear }) => (
   <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full">
     {label}
@@ -70,6 +62,7 @@ const Home = () => {
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const [view, setView] = useState('list')
   const [sort, setSort] = useState('latest')
+  const [updates, setUpdates] = useState([])
   const [activeChip, setActiveChip] = useState('All')
   const [activeCategory, setActiveCategory] = useState('All Jobs')
   const [activeQualification, setActiveQualification] = useState(null)
@@ -131,6 +124,13 @@ const Home = () => {
       })
       .finally(() => setLoading(false))
   }, [page, debouncedQuery, activeChip, activeCategory, activeQualification, activeState, sort])
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/v1/notifications`)
+      .then(res => res.json())
+      .then(data => setUpdates(Array.isArray(data) ? data.slice(0, 6) : []))
+      .catch(() => setUpdates([]))
+  }, [])
 
   const relativeUpdated = () => {
     if (!updatedAt) return '—'
@@ -471,27 +471,38 @@ const Home = () => {
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="text-sm font-semibold text-gray-900 inline-flex items-center gap-2">
-                <FaArrowUp className="text-green-600" size={11} />
-                Trending today
+                <FaBell className="text-red-600" size={11} />
+                Latest Updates
               </div>
-              <button className="text-xs text-gray-500 hover:text-gray-800">Refresh</button>
+              <Link to="/updates" className="text-xs text-gray-500 hover:text-gray-800">View all</Link>
             </div>
-            <ul className="space-y-3">
-              {trendingToday.map((t, i) => (
-                <li key={t.title} className="flex items-start gap-3">
-                  <span className="text-xs text-gray-400 font-mono pt-0.5 w-5">{String(i + 1).padStart(2, '0')}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm text-gray-900 leading-snug">{t.title}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">{t.searches} searches today</div>
-                  </div>
-                  {t.up ? (
-                    <FaArrowUp className="text-green-600 mt-1" size={11} />
-                  ) : (
-                    <FaArrowDown className="text-red-500 mt-1" size={11} />
-                  )}
-                </li>
-              ))}
-            </ul>
+            {updates.length === 0 ? (
+              <p className="text-xs text-gray-500">No updates yet.</p>
+            ) : (
+              <ul className="space-y-3">
+                {updates.map((u, i) => {
+                  const inner = (
+                    <>
+                      <span className="text-xs text-gray-400 font-mono pt-0.5 w-5">{String(i + 1).padStart(2, '0')}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm text-gray-900 leading-snug">{u.title}</div>
+                        <div className="text-xs text-gray-500 mt-0.5 flex items-center gap-2">
+                          {u.category && <span className="font-medium text-red-600">{u.category}</span>}
+                          {u.date && <span>{new Date(u.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>}
+                        </div>
+                      </div>
+                    </>
+                  )
+                  if (u.link_path) {
+                    return <li key={u.id}><Link to={u.link_path} className="flex items-start gap-3 hover:opacity-80">{inner}</Link></li>
+                  }
+                  if (u.url) {
+                    return <li key={u.id}><a href={u.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 hover:opacity-80">{inner}</a></li>
+                  }
+                  return <li key={u.id} className="flex items-start gap-3">{inner}</li>
+                })}
+              </ul>
+            )}
           </div>
         </aside>
       </section>

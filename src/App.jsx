@@ -20,6 +20,7 @@ const AnswerKeys = lazy(() => import('./pages/AnswerKeys'))
 const AnswerKeyDetails = lazy(() => import('./pages/AnswerKeyDetails'))
 const Syllabus = lazy(() => import('./pages/Syllabus'))
 const SyllabusDetails = lazy(() => import('./pages/SyllabusDetails'))
+const Updates = lazy(() => import('./pages/Updates'))
 const JobDetails = lazy(() => import('./pages/JobDetails'))
 const AboutUs = lazy(() => import('./pages/static/AboutUs'))
 const PrivacyPolicy = lazy(() => import('./pages/static/PrivacyPolicy'))
@@ -34,6 +35,7 @@ const AdminPages = lazy(() => import('./pages/AdminPages'))
 const AdminAdmitCards = lazy(() => import('./pages/AdminAdmitCards'))
 const AdminAnswerKeys = lazy(() => import('./pages/AdminAnswerKeys'))
 const AdminSyllabus = lazy(() => import('./pages/AdminSyllabus'))
+const AdminUpdates = lazy(() => import('./pages/AdminUpdates'))
 
 const PageLoader = () => (
   <p className="text-gray-500 text-sm py-10 text-center">Loading…</p>
@@ -68,6 +70,7 @@ function MainLayout() {
               <Route path="/answer-keys/:id" element={<AnswerKeyDetails />} />
               <Route path="/syllabus" element={<Syllabus />} />
               <Route path="/syllabus/:id" element={<SyllabusDetails />} />
+              <Route path="/updates" element={<Updates />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
@@ -92,6 +95,7 @@ function App() {
           <Route path="/admin/admit-cards" element={<AdminRoute><AdminAdmitCards /></AdminRoute>} />
           <Route path="/admin/answer-keys" element={<AdminRoute><AdminAnswerKeys /></AdminRoute>} />
           <Route path="/admin/syllabus" element={<AdminRoute><AdminSyllabus /></AdminRoute>} />
+          <Route path="/admin/updates" element={<AdminRoute><AdminUpdates /></AdminRoute>} />
           <Route path="/admin/pages" element={<AdminRoute><AdminPages /></AdminRoute>} />
           <Route path="*" element={<JobsProvider><MainLayout /></JobsProvider>} />
         </Routes>
