@@ -313,17 +313,6 @@ const Home = () => {
               </li>
             </ul>
           </div>
-
-          <div className="rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 text-white p-5">
-            <div className="text-[10px] font-semibold tracking-wider text-gray-400 uppercase">Free</div>
-            <div className="mt-1 text-lg font-bold">Never miss a deadline.</div>
-            <p className="mt-2 text-sm text-gray-300">
-              Get WhatsApp alerts the moment a notification drops in your category.
-            </p>
-            <button className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-medium px-4 py-2.5 rounded-md hover:bg-gray-100">
-              <FaBell size={12} /> Enable alerts <FaArrowRight size={11} />
-            </button>
-          </div>
         </aside>
 
         {/* Center: jobs */}
