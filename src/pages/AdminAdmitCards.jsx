@@ -6,7 +6,7 @@ const config = {
   resource: 'admit_cards',
   payloadKey: 'admit_card',
   detailKey: 'admit_card_detail',
-  hasLinks: false,
+  hasLinks: true,
 }
 
 const AdminAdmitCards = () => <AdminEntityManager config={config} />

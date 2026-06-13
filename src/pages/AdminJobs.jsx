@@ -28,6 +28,8 @@ const emptyDetail = {
   qualification: '',
 }
 
+const emptyLink = { link_type: '', title: '', url: '' }
+
 const toDateInput = (val) => {
   if (!val) return ''
   const d = new Date(val)
@@ -66,6 +68,8 @@ const AdminJobs = () => {
   const [editingId, setEditingId] = useState(null)
   const [jobForm, setJobForm] = useState(emptyJob)
   const [detailForm, setDetailForm] = useState(emptyDetail)
+  const [links, setLinks] = useState([])
+  const [removedLinkIds, setRemovedLinkIds] = useState([])
   const [showForm, setShowForm] = useState(false)
 
   const loadJobs = () => {
@@ -85,8 +89,22 @@ const AdminJobs = () => {
     setEditingId(null)
     setJobForm(emptyJob)
     setDetailForm(emptyDetail)
+    setLinks([])
+    setRemovedLinkIds([])
     setShowForm(false)
   }
+
+  const addLink = () => setLinks((prev) => [...prev, { ...emptyLink }])
+
+  const updateLink = (idx, field, value) =>
+    setLinks((prev) => prev.map((l, i) => (i === idx ? { ...l, [field]: value } : l)))
+
+  const removeLink = (idx) =>
+    setLinks((prev) => {
+      const target = prev[idx]
+      if (target && target.id) setRemovedLinkIds((ids) => [...ids, target.id])
+      return prev.filter((_, i) => i !== idx)
+    })
 
   const startCreate = () => {
     resetForm()
@@ -124,6 +142,11 @@ const AdminJobs = () => {
         payment_mode: stringifyList(d.payment_mode),
         qualification: stringifyList(d.qualification),
       })
+      const sourceLinks = Array.isArray(full.links) ? full.links : []
+      setLinks(
+        sourceLinks.map((l) => ({ id: l.id, link_type: l.link_type || '', title: l.title || '', url: l.url || '' }))
+      )
+      setRemovedLinkIds([])
       setShowForm(true)
     } catch (e) {
       setError(e.message)
@@ -156,6 +179,15 @@ const AdminJobs = () => {
           payment_mode: parseList(detailForm.payment_mode),
           qualification: parseList(detailForm.qualification),
         },
+        links_attributes: [
+          ...links.map((l) => ({
+            ...(l.id ? { id: l.id } : {}),
+            link_type: l.link_type,
+            title: l.title,
+            url: l.url,
+          })),
+          ...removedLinkIds.map((id) => ({ id, _destroy: true })),
+        ],
       },
     }
     const url = editingId ? `${API}/jobs/${editingId}` : `${API}/jobs`
@@ -297,6 +329,37 @@ const AdminJobs = () => {
               (v) => setDetailForm({ ...detailForm, qualification: v }),
               'Comma-separated list'
             )}
+          </div>
+
+          <div className="mt-4 flex items-center justify-between">
+            <h3 className="text-[11px] font-bold uppercase tracking-wide text-gray-500">Links</h3>
+            <button
+              type="button"
+              onClick={addLink}
+              className="rounded bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-200"
+            >
+              + Add Link
+            </button>
+          </div>
+          <div className="mt-1.5 space-y-2">
+            {links.length === 0 && <p className="text-[11px] text-gray-500">No links added.</p>}
+            {links.map((l, idx) => (
+              <div
+                key={idx}
+                className="grid grid-cols-1 gap-2 rounded border border-gray-200 p-2 sm:grid-cols-[1fr_1fr_2fr_auto]"
+              >
+                {input('Type', l.link_type, (v) => updateLink(idx, 'link_type', v))}
+                {input('Title', l.title, (v) => updateLink(idx, 'title', v))}
+                {input('URL', l.url, (v) => updateLink(idx, 'url', v))}
+                <button
+                  type="button"
+                  onClick={() => removeLink(idx)}
+                  className="self-end rounded bg-red-100 px-2 py-1 text-[11px] font-semibold text-red-700 hover:bg-red-200"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
           </div>
 
           <div className="mt-3 flex gap-2">
