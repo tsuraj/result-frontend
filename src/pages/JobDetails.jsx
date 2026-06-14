@@ -247,6 +247,18 @@ const JobDetails = () => {
         </Section>
       )}
 
+      {detail.eligibility && (
+        <Section title="Eligibility">
+          <p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{detail.eligibility}</p>
+        </Section>
+      )}
+
+      {detail.selection_process && (
+        <Section title="Selection Process">
+          <p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{detail.selection_process}</p>
+        </Section>
+      )}
+
       {qualification && qualification.length > 0 && (
         <Section title="Qualification">
           <ul className="space-y-2 text-sm text-gray-700">

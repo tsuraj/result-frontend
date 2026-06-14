@@ -19,6 +19,8 @@ const emptyDetail = {
   experience: '',
   total_posts: '',
   description: '',
+  eligibility: '',
+  selection_process: '',
   notification_link: '',
   website_link: '',
   important_dates: '',
@@ -134,6 +136,8 @@ const AdminJobs = () => {
         experience: d.experience || '',
         total_posts: d.total_posts ?? '',
         description: d.description || '',
+        eligibility: d.eligibility || '',
+        selection_process: d.selection_process || '',
         notification_link: d.notification_link || '',
         website_link: d.website_link || '',
         important_dates: d.important_dates || '',
@@ -304,6 +308,12 @@ const AdminJobs = () => {
             )}
             {textarea('Description', detailForm.description, (v) =>
               setDetailForm({ ...detailForm, description: v })
+            )}
+            {textarea('Eligibility', detailForm.eligibility, (v) =>
+              setDetailForm({ ...detailForm, eligibility: v })
+            )}
+            {textarea('Selection Process', detailForm.selection_process, (v) =>
+              setDetailForm({ ...detailForm, selection_process: v })
             )}
             {textarea('Important Dates', detailForm.important_dates, (v) =>
               setDetailForm({ ...detailForm, important_dates: v })
