@@ -13,6 +13,36 @@ const toIso = (value) => {
   return Number.isNaN(d.getTime()) ? undefined : d.toISOString()
 }
 
+// Map free-text job type to a valid schema.org employmentType enum.
+const EMPLOYMENT_TYPE_MAP = {
+  'full time': 'FULL_TIME', 'full-time': 'FULL_TIME', fulltime: 'FULL_TIME',
+  permanent: 'FULL_TIME', regular: 'FULL_TIME',
+  'part time': 'PART_TIME', 'part-time': 'PART_TIME',
+  contract: 'CONTRACTOR', contractual: 'CONTRACTOR', contractor: 'CONTRACTOR',
+  temporary: 'TEMPORARY', temp: 'TEMPORARY',
+  internship: 'INTERN', intern: 'INTERN', apprentice: 'INTERN', apprenticeship: 'INTERN',
+}
+const employmentTypeEnum = (t) =>
+  t ? (EMPLOYMENT_TYPE_MAP[String(t).trim().toLowerCase()] || 'FULL_TIME') : 'FULL_TIME'
+
+// Best-effort: turn a free-text salary ("₹35,400 - ₹1,12,400") into a
+// structured MonetaryAmount. Returns undefined when no salary-like numbers
+// are present (so we never emit junk). Govt pay scales are monthly -> MONTH.
+const parseBaseSalary = (text) => {
+  if (!text) return undefined
+  const nums = String(text).replace(/[,\s]/g, '').match(/\d{3,}/g)
+  if (!nums) return undefined
+  const values = nums.map(Number).filter((n) => n >= 1000)
+  if (!values.length) return undefined
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const value =
+    min === max
+      ? { '@type': 'QuantitativeValue', value: min, unitText: 'MONTH' }
+      : { '@type': 'QuantitativeValue', minValue: min, maxValue: max, unitText: 'MONTH' }
+  return { '@type': 'MonetaryAmount', currency: 'INR', value }
+}
+
 const formatDate = (value) => {
   if (!value) return null
   const d = new Date(value)
@@ -88,10 +118,11 @@ const JobDetails = () => {
         description: md.description || metaDesc || metaTitle,
         datePosted: toIso(job.created_at || md.start_date),
         validThrough: toIso(md.last_date || job.last_date),
-        employmentType: md.type ? String(md.type).toUpperCase() : undefined,
+        employmentType: employmentTypeEnum(md.type),
         hiringOrganization: metaOrg
           ? { '@type': 'Organization', name: metaOrg }
           : { '@type': 'Organization', name: SITE_NAME, sameAs: SITE_URL },
+        baseSalary: parseBaseSalary(md.salary),
         jobLocation: {
           '@type': 'Place',
           address: {
