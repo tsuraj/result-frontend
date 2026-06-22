@@ -8,8 +8,13 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
-dist-ssr
+
+# Next.js
+.next
+out
+
+# Env overrides (Next reads these; never commit secrets here)
+.env*.local
 *.local
 
 # Editor directories and files
