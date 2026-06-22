@@ -3,7 +3,7 @@ import EntityDetail from '../../../components/EntityDetail'
 import { getSyllabus } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
 
-export const revalidate = 300
+export const revalidate = 60
 
 const cleanDesc = (s) => (s || '').replace(/\s+/g, ' ').trim().slice(0, 160)
 const toIso = (v) => {

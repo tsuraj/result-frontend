@@ -2,7 +2,7 @@ import EntityListClient from '../../components/EntityListClient'
 import { getAdmitCards } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 
-export const revalidate = 300
+export const revalidate = 60
 
 export const metadata = pageMetadata({
   title: 'Admit Cards 2026 — Download Government Exam Hall Tickets',

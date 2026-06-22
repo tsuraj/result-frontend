@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { authFetch, API_BASE } from '../../lib/authFetch'
+import { triggerRevalidate } from '../../lib/triggerRevalidate'
 
 const SLUGS = ['about', 'privacy', 'disclaimer', 'terms', 'contact']
 
@@ -48,6 +49,7 @@ export default function AdminPages() {
       }
       setStatus({ state: 'success', message: 'Saved.' })
       loadAll()
+      triggerRevalidate([`/${active}`])
     } catch (err) {
       setStatus({ state: 'error', message: err.message })
     }

@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { authFetch, API_BASE } from '../../lib/authFetch'
+import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
 
 const emptyDetail = {
   id: undefined,
@@ -132,6 +133,7 @@ export default function AdminEntityManager({ config }) {
       if (!res.ok && res.status !== 204) throw new Error('Failed to delete')
       setItems((prev) => prev.filter((r) => r.id !== id))
       if (editingId === id) resetForm()
+      triggerRevalidate(revalidationPaths[resource])
     } catch (e) {
       setError(e.message)
     }
@@ -189,6 +191,7 @@ export default function AdminEntityManager({ config }) {
       }
       resetForm()
       loadItems()
+      triggerRevalidate(revalidationPaths[resource])
     } catch (e) {
       setError(e.message)
     }

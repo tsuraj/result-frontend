@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { authFetch, API_BASE } from '../../lib/authFetch'
+import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
 
 const emptyJob = { title: '', organization: '', last_date: '' }
 
@@ -145,6 +146,7 @@ export default function AdminJobs() {
       if (!res.ok && res.status !== 204) throw new Error('Failed to delete')
       setJobs((prev) => prev.filter((j) => j.id !== id))
       if (editingId === id) resetForm()
+      triggerRevalidate(revalidationPaths.jobs)
     } catch (e) {
       setError(e.message)
     }
@@ -188,6 +190,7 @@ export default function AdminJobs() {
       }
       resetForm()
       loadJobs()
+      triggerRevalidate(revalidationPaths.jobs)
     } catch (e) {
       setError(e.message)
     }

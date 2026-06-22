@@ -4,7 +4,7 @@ import JobCard from '../../components/JobCard'
 import { getJobs } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 
-export const revalidate = 300
+export const revalidate = 60
 
 export async function generateMetadata({ searchParams }) {
   const q = (searchParams?.q || '').trim()

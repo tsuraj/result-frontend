@@ -2,7 +2,7 @@ import { getJobStats, getNotifications } from '../lib/api'
 import { pageMetadata } from '../lib/seo'
 import HomeClient from '../components/HomeClient'
 
-export const revalidate = 300
+export const revalidate = 60
 
 export const metadata = pageMetadata({
   title: 'Hire Sarkar — Latest Government Jobs, Results & Admit Cards',

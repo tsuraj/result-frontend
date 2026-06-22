@@ -2,7 +2,7 @@ import EntityListClient from '../../components/EntityListClient'
 import { getSyllabi } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 
-export const revalidate = 300
+export const revalidate = 60
 
 export const metadata = pageMetadata({
   title: 'Exam Syllabus 2026 — Government Exam Syllabus & Pattern',

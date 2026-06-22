@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { authFetch, API_BASE } from '../../lib/authFetch'
+import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
 
 const emptyResult = { title: '', category: '', date: '' }
 
@@ -95,6 +96,7 @@ export default function AdminResult() {
       if (!res.ok && res.status !== 204) throw new Error('Failed to delete')
       setResults((prev) => prev.filter((r) => r.id !== id))
       if (editingId === id) resetForm()
+      triggerRevalidate(revalidationPaths.results)
     } catch (e) {
       setError(e.message)
     }
@@ -147,6 +149,7 @@ export default function AdminResult() {
       }
       resetForm()
       loadResults()
+      triggerRevalidate(revalidationPaths.results)
     } catch (e) {
       setError(e.message)
     }

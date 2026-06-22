@@ -7,7 +7,7 @@ import {
 import { getJob } from '../../../lib/api'
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, pageMetadata, breadcrumb } from '../../../lib/seo'
 
-export const revalidate = 300
+export const revalidate = 60
 
 const fmtDate = (v) => {
   if (!v) return null

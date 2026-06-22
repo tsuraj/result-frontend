@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { authFetch, API_BASE } from '../../lib/authFetch'
+import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
 
 const LINK_TYPES = [
   { key: 'Job', label: 'Job', endpoint: 'jobs' },
@@ -88,6 +89,7 @@ export default function AdminUpdates() {
       if (!res.ok && res.status !== 204) throw new Error('Failed to delete')
       setItems((prev) => prev.filter((n) => n.id !== id))
       if (editingId === id) resetForm()
+      triggerRevalidate(revalidationPaths.notifications)
     } catch (e) { setError(e.message) }
   }
 
@@ -114,6 +116,7 @@ export default function AdminUpdates() {
       }
       resetForm()
       loadItems()
+      triggerRevalidate(revalidationPaths.notifications)
     } catch (e) { setError(e.message) }
   }
 
