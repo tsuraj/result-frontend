@@ -1,6 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/sitemap.xml", "destination": "https://api.hiresarkar.com/sitemap.xml" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
-}
