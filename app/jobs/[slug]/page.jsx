@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import {
   FaArrowLeft, FaArrowRight, FaMapMarkerAlt, FaRupeeSign, FaUsers,
   FaBriefcase, FaRegCalendarAlt,
@@ -53,7 +53,8 @@ export async function generateMetadata({ params }) {
   const title = d.title || job.title
   const org = d.organization || job.organization
   const desc = cleanDesc(d.description) || `${title}${org ? ` by ${org}` : ''} — eligibility, important dates, fees and how to apply on Hire Sarkar.`
-  return pageMetadata({ title, description: desc, path: `/jobs/${params.slug}`, type: 'article' })
+  const canonicalSlug = job.slug || params.slug
+  return pageMetadata({ title, description: desc, path: `/jobs/${canonicalSlug}`, type: 'article' })
 }
 
 const Section = ({ title, children }) => (
@@ -78,6 +79,8 @@ const Tile = ({ icon: Icon, label, value }) => {
 export default async function JobDetailPage({ params }) {
   const job = await getJob(params.slug)
   if (!job) notFound()
+  if (job.slug && job.slug !== params.slug) redirect(`/jobs/${job.slug}`)
+  const slug = job.slug || params.slug
 
   const d = job.job_detail || {}
   const title = d.title || job.title
@@ -98,14 +101,14 @@ export default async function JobDetailPage({ params }) {
       : { '@type': 'Organization', name: SITE_NAME, sameAs: SITE_URL },
     baseSalary: parseBaseSalary(d.salary),
     jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: d.location || undefined, addressCountry: 'IN' } },
-    url: `${SITE_URL}/jobs/${params.slug}`,
+    url: `${SITE_URL}/jobs/${slug}`,
     image: [DEFAULT_OG_IMAGE],
     directApply: Boolean(applyLink),
   }
   const crumbs = breadcrumb([
     { name: 'Home', url: '/' },
     { name: 'Latest Jobs', url: '/latest-jobs' },
-    { name: title, url: `/jobs/${params.slug}` },
+    { name: title, url: `/jobs/${slug}` },
   ])
 
   return (

@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
 import { getAdmitCard } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
@@ -15,10 +15,11 @@ const toIso = (v) => {
 export async function generateMetadata({ params }) {
   const item = await getAdmitCard(params.slug)
   if (!item) return pageMetadata({ title: 'Admit card not found', description: 'This admit card could not be found.', path: `/admit-cards/${params.slug}`, noindex: true })
+  const canonicalSlug = item.slug || params.slug
   return pageMetadata({
     title: item.title,
     description: cleanDesc(item.description) || `${item.title} — download admit card, exam date and details on Hire Sarkar.`,
-    path: `/admit-cards/${params.slug}`,
+    path: `/admit-cards/${canonicalSlug}`,
     type: 'article',
   })
 }
@@ -26,7 +27,8 @@ export async function generateMetadata({ params }) {
 export default async function AdmitCardDetailPage({ params }) {
   const item = await getAdmitCard(params.slug)
   if (!item) notFound()
-  const path = `/admit-cards/${params.slug}`
+  if (item.slug && item.slug !== params.slug) redirect(`/admit-cards/${item.slug}`)
+  const path = `/admit-cards/${item.slug || params.slug}`
   const description = cleanDesc(item.description) || `${item.title} — admit card details on Hire Sarkar.`
   const article = articleJsonLd({
     title: item.title,

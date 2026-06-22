@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
 import { getSyllabus } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
@@ -15,10 +15,11 @@ const toIso = (v) => {
 export async function generateMetadata({ params }) {
   const item = await getSyllabus(params.slug)
   if (!item) return pageMetadata({ title: 'Syllabus not found', description: 'This syllabus could not be found.', path: `/syllabus/${params.slug}`, noindex: true })
+  const canonicalSlug = item.slug || params.slug
   return pageMetadata({
     title: item.title,
     description: cleanDesc(item.description) || `${item.title} — detailed syllabus and exam pattern on Hire Sarkar.`,
-    path: `/syllabus/${params.slug}`,
+    path: `/syllabus/${canonicalSlug}`,
     type: 'article',
   })
 }
@@ -26,7 +27,8 @@ export async function generateMetadata({ params }) {
 export default async function SyllabusDetailPage({ params }) {
   const item = await getSyllabus(params.slug)
   if (!item) notFound()
-  const path = `/syllabus/${params.slug}`
+  if (item.slug && item.slug !== params.slug) redirect(`/syllabus/${item.slug}`)
+  const path = `/syllabus/${item.slug || params.slug}`
   const description = cleanDesc(item.description) || `${item.title} — syllabus and exam pattern on Hire Sarkar.`
   const article = articleJsonLd({
     title: item.title,

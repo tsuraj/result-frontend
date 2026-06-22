@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
 import { getResult } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
@@ -15,10 +15,11 @@ const toIso = (v) => {
 export async function generateMetadata({ params }) {
   const item = await getResult(params.slug)
   if (!item) return pageMetadata({ title: 'Result not found', description: 'This result could not be found.', path: `/results/${params.slug}`, noindex: true })
+  const canonicalSlug = item.slug || params.slug
   return pageMetadata({
     title: item.title,
     description: cleanDesc(item.description) || `${item.title} — check result, important dates and download links on Hire Sarkar.`,
-    path: `/results/${params.slug}`,
+    path: `/results/${canonicalSlug}`,
     type: 'article',
   })
 }
@@ -26,7 +27,8 @@ export async function generateMetadata({ params }) {
 export default async function ResultDetailPage({ params }) {
   const item = await getResult(params.slug)
   if (!item) notFound()
-  const path = `/results/${params.slug}`
+  if (item.slug && item.slug !== params.slug) redirect(`/results/${item.slug}`)
+  const path = `/results/${item.slug || params.slug}`
   const description = cleanDesc(item.description) || `${item.title} — official result update on Hire Sarkar.`
   const article = articleJsonLd({
     title: item.title,

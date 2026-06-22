@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
 import { getAnswerKey } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
@@ -15,10 +15,11 @@ const toIso = (v) => {
 export async function generateMetadata({ params }) {
   const item = await getAnswerKey(params.slug)
   if (!item) return pageMetadata({ title: 'Answer key not found', description: 'This answer key could not be found.', path: `/answer-keys/${params.slug}`, noindex: true })
+  const canonicalSlug = item.slug || params.slug
   return pageMetadata({
     title: item.title,
     description: cleanDesc(item.description) || `${item.title} — download answer key and details on Hire Sarkar.`,
-    path: `/answer-keys/${params.slug}`,
+    path: `/answer-keys/${canonicalSlug}`,
     type: 'article',
   })
 }
@@ -26,7 +27,8 @@ export async function generateMetadata({ params }) {
 export default async function AnswerKeyDetailPage({ params }) {
   const item = await getAnswerKey(params.slug)
   if (!item) notFound()
-  const path = `/answer-keys/${params.slug}`
+  if (item.slug && item.slug !== params.slug) redirect(`/answer-keys/${item.slug}`)
+  const path = `/answer-keys/${item.slug || params.slug}`
   const description = cleanDesc(item.description) || `${item.title} — answer key details on Hire Sarkar.`
   const article = articleJsonLd({
     title: item.title,
