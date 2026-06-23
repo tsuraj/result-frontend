@@ -47,6 +47,12 @@ const orgWebsiteJsonLd = {
       logo: DEFAULT_OG_IMAGE,
       description: "India's trusted government job portal for the latest Sarkari jobs, results, admit cards, answer keys and syllabus.",
       email: 'hiresarkar590@gmail.com',
+      sameAs: [
+        'https://t.me/hiresarkar',
+        'https://www.instagram.com/hiresarkardotcom',
+        'https://x.com/HireSarkar590',
+        'https://www.facebook.com/people/hiresarkarcom/61590899590352/',
+      ],
     },
     {
       '@type': 'WebSite',

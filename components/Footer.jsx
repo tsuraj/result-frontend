@@ -1,5 +1,12 @@
 import Link from 'next/link'
-import { FaFacebook, FaTwitter, FaYoutube, FaInstagram, FaEnvelope, FaMobileAlt } from 'react-icons/fa'
+import { FaFacebook, FaTwitter, FaInstagram, FaTelegramPlane, FaEnvelope, FaMobileAlt } from 'react-icons/fa'
+
+const SOCIAL_LINKS = [
+  { href: 'https://t.me/hiresarkar', label: 'Join us on Telegram', Icon: FaTelegramPlane },
+  { href: 'https://www.instagram.com/hiresarkardotcom', label: 'Follow on Instagram', Icon: FaInstagram },
+  { href: 'https://x.com/HireSarkar590', label: 'Follow on X (Twitter)', Icon: FaTwitter },
+  { href: 'https://www.facebook.com/people/hiresarkarcom/61590899590352/', label: 'Follow on Facebook', Icon: FaFacebook },
+]
 
 const footerLinks = [
   {
@@ -36,10 +43,18 @@ export default function Footer() {
               Get the latest government job notifications, exam results, admit cards, answer keys and syllabus from across India.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-white"><FaFacebook size={20} /></a>
-              <a href="#" className="text-gray-300 hover:text-white"><FaTwitter size={20} /></a>
-              <a href="#" className="text-gray-300 hover:text-white"><FaYoutube size={20} /></a>
-              <a href="#" className="text-gray-300 hover:text-white"><FaInstagram size={20} /></a>
+              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="text-gray-300 hover:text-white"
+                >
+                  <Icon size={20} />
+                </a>
+              ))}
             </div>
           </div>
 

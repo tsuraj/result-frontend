@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   FaSearch, FaSlidersH, FaThLarge, FaList, FaArrowRight,
-  FaBell, FaAngleLeft, FaAngleRight, FaAngleDown, FaTimes,
+  FaBell, FaAngleLeft, FaAngleRight, FaAngleDown, FaTimes, FaTelegramPlane,
 } from 'react-icons/fa'
 import JobCard from './JobCard'
 import { API_BASE } from '../lib/authFetch'
@@ -423,6 +423,26 @@ export default function HomeClient({ initialStats = {}, initialUpdates = [] }) {
         </div>
 
         <aside className="lg:col-span-3 space-y-5">
+          <a
+            href="https://t.me/hiresarkar"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 hover:border-blue-300 hover:shadow-sm transition-all"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                <FaTelegramPlane size={18} />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-gray-900">Get instant job alerts</div>
+                <div className="text-xs text-gray-600 mt-0.5">Join our Telegram channel — fresh sarkari notifications the moment they drop.</div>
+                <div className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-700">
+                  Join channel <FaArrowRight size={10} />
+                </div>
+              </div>
+            </div>
+          </a>
+
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="text-sm font-semibold text-gray-900 inline-flex items-center gap-2">
