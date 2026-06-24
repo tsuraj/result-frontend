@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { authFetch, API_BASE } from '../../lib/authFetch'
 import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
+import { useRole, isAdminRole } from '../../lib/useRole'
 
 const emptyJob = { title: '', organization: '', last_date: '' }
 
@@ -54,6 +55,9 @@ const stringifyKeyValue = (obj) => {
 const stringifyList = (val) => (Array.isArray(val) ? val.join(', ') : val || '')
 
 export default function AdminJobs() {
+  const role = useRole()
+  const canDelete = isAdminRole(role)
+
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -308,7 +312,9 @@ export default function AdminJobs() {
             </div>
             <div className="flex shrink-0 gap-1">
               <button onClick={() => startEdit(j)} className="rounded bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-200">Edit</button>
-              <button onClick={() => handleDelete(j.id)} className="rounded bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-700 hover:bg-red-200">Del</button>
+              {canDelete && (
+                <button onClick={() => handleDelete(j.id)} className="rounded bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-700 hover:bg-red-200">Del</button>
+              )}
             </div>
           </div>
         ))}
@@ -336,7 +342,9 @@ export default function AdminJobs() {
                 <td className="px-2 py-1">{toDateInput(j.last_date) || '-'}</td>
                 <td className="px-2 py-1 text-right whitespace-nowrap">
                   <button onClick={() => startEdit(j)} className="mr-1 rounded bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-200">Edit</button>
-                  <button onClick={() => handleDelete(j.id)} className="rounded bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-700 hover:bg-red-200">Delete</button>
+                  {canDelete && (
+                    <button onClick={() => handleDelete(j.id)} className="rounded bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-700 hover:bg-red-200">Delete</button>
+                  )}
                 </td>
               </tr>
             ))}

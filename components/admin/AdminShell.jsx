@@ -29,7 +29,7 @@ export default function AdminShell({ children }) {
       setStatus('denied')
       return
     }
-    if (user.role !== 'admin') {
+    if (user.role !== 'admin' && user.role !== 'moderator') {
       router.replace('/')
       setStatus('denied')
       return

@@ -25,7 +25,11 @@ export default function Header({ activeJobs = 0 }) {
     const token = localStorage.getItem('token')
     let user = null
     try { user = JSON.parse(localStorage.getItem('user')) } catch { user = null }
-    setAuth({ loggedIn: Boolean(token && user), admin: Boolean(token && user && user.role === 'admin') })
+    const role = user?.role
+    setAuth({
+      loggedIn: Boolean(token && user),
+      admin: Boolean(token && user && (role === 'admin' || role === 'moderator')),
+    })
   }, [])
 
   const handleLogout = () => {

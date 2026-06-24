@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { authFetch, API_BASE } from '../../lib/authFetch'
 import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
+import { useRole, isAdminRole } from '../../lib/useRole'
 
 const LINK_TYPES = [
   { key: 'Job', label: 'Job', endpoint: 'jobs' },
@@ -23,6 +24,9 @@ const toDateInput = (val) => {
 }
 
 export default function AdminUpdates() {
+  const role = useRole()
+  const canDelete = isAdminRole(role)
+
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -244,7 +248,9 @@ export default function AdminUpdates() {
                 <td className="px-3 py-2 text-gray-600">{n.link_label || (n.url ? 'External link' : '—')}</td>
                 <td className="px-3 py-2 text-right">
                   <button onClick={() => startEdit(n)} className="mr-2 rounded bg-gray-100 px-2 py-1 font-semibold text-gray-700 hover:bg-gray-200">Edit</button>
-                  <button onClick={() => handleDelete(n.id)} className="rounded bg-red-100 px-2 py-1 font-semibold text-red-700 hover:bg-red-200">Delete</button>
+                  {canDelete && (
+                    <button onClick={() => handleDelete(n.id)} className="rounded bg-red-100 px-2 py-1 font-semibold text-red-700 hover:bg-red-200">Delete</button>
+                  )}
                 </td>
               </tr>
             ))}
