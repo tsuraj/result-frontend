@@ -1,6 +1,7 @@
-import { getJobStats, getNotifications } from '../lib/api'
+import { getJobStats, getNotifications, getTopicsSummary } from '../lib/api'
 import { pageMetadata } from '../lib/seo'
 import HomeClient from '../components/HomeClient'
+import CategoryGrid from '../components/CategoryGrid'
 
 export const revalidate = 60
 
@@ -14,6 +15,7 @@ export const metadata = pageMetadata({
 export default async function HomePage() {
   let initialStats = { total_active: 0, posted_today: 0, closing_this_week: 0 }
   let initialUpdates = []
+  let topicsSummary = null
   try {
     const data = await getJobStats()
     if (data && data.meta) {
@@ -32,6 +34,17 @@ export default async function HomePage() {
   } catch {
     /* keep defaults */
   }
+  try {
+    topicsSummary = await getTopicsSummary()
+  } catch {
+    /* CategoryGrid will render with no counts */
+  }
 
-  return <HomeClient initialStats={initialStats} initialUpdates={initialUpdates} />
+  return (
+    <HomeClient
+      initialStats={initialStats}
+      initialUpdates={initialUpdates}
+      categoryGrid={<CategoryGrid summary={topicsSummary} />}
+    />
+  )
 }

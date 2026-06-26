@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
 import FollowCTA from '../../../components/FollowCTA'
+import RelatedTopicLink from '../../../components/RelatedTopicLink'
 import { getResult } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
 
@@ -47,6 +48,7 @@ export default async function ResultDetailPage({ params }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([article, crumbs]) }} />
       <EntityDetail item={item} backTo="/results" backLabel="Results" ctaLabel="Check Result" fallbackBadge="RES" />
+      <RelatedTopicLink kind="results" fields={[item.title, item.category]} />
       <FollowCTA />
     </>
   )

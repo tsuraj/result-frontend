@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fa'
 import { getJob } from '../../../lib/api'
 import FollowCTA from '../../../components/FollowCTA'
+import RelatedTopicLink from '../../../components/RelatedTopicLink'
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, pageMetadata, breadcrumb } from '../../../lib/seo'
 
 export const revalidate = 60
@@ -167,6 +168,7 @@ export default async function JobDetailPage({ params }) {
       {d.how_to_apply && <Section title="How to apply"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.how_to_apply}</p></Section>}
       {d.important_dates && <Section title="Important Dates"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.important_dates}</p></Section>}
 
+      <RelatedTopicLink kind="jobs" fields={[title, organization, d.location]} />
       <FollowCTA />
     </div>
   )

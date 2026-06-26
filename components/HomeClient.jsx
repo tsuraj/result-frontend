@@ -47,7 +47,7 @@ const ActiveChip = ({ label, onClear }) => (
   </span>
 )
 
-export default function HomeClient({ initialStats = {}, initialUpdates = [] }) {
+export default function HomeClient({ initialStats = {}, initialUpdates = [], categoryGrid = null }) {
   const [stats, setStats] = useState(initialStats)
   const [jobs, setJobs] = useState([])
   const [meta, setMeta] = useState({ page: 1, per_page: PAGE_SIZE, total: 0, total_pages: 1 })
@@ -226,6 +226,8 @@ export default function HomeClient({ initialStats = {}, initialUpdates = [] }) {
           </div>
         </div>
       </section>
+
+      {categoryGrid}
 
       <section className="container py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
         <aside className="lg:col-span-3 space-y-5">
