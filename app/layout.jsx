@@ -11,6 +11,7 @@ import Analytics from '../components/Analytics'
 import NotificationBar from '../components/NotificationBar'
 import { getJobStats } from '../lib/api'
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from '../lib/seo'
+import { SOCIAL_URLS } from '../lib/social'
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
@@ -47,12 +48,7 @@ const orgWebsiteJsonLd = {
       logo: DEFAULT_OG_IMAGE,
       description: "India's trusted government job portal for the latest Sarkari jobs, results, admit cards, answer keys and syllabus.",
       email: 'hiresarkar590@gmail.com',
-      sameAs: [
-        'https://t.me/hiresarkar',
-        'https://www.instagram.com/hiresarkardotcom',
-        'https://x.com/HireSarkar590',
-        'https://www.facebook.com/people/hiresarkarcom/61590899590352/',
-      ],
+      sameAs: SOCIAL_URLS,
     },
     {
       '@type': 'WebSite',

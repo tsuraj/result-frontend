@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { FaSearch, FaArrowRight, FaArrowLeft } from 'react-icons/fa'
 import JobCard from '../../components/JobCard'
+import FollowCTA from '../../components/FollowCTA'
 import { getJobs } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 
@@ -98,6 +99,8 @@ export default async function LatestJobsPage({ searchParams }) {
           ) : <span />}
         </div>
       )}
+
+      <FollowCTA />
     </div>
   )
 }

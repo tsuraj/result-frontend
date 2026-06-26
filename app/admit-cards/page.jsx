@@ -1,4 +1,5 @@
 import EntityListClient from '../../components/EntityListClient'
+import FollowCTA from '../../components/FollowCTA'
 import { getAdmitCards } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 
@@ -12,5 +13,10 @@ export const metadata = pageMetadata({
 
 export default async function AdmitCardsPage() {
   const items = await getAdmitCards()
-  return <EntityListClient items={items} basePath="/admit-cards" label="Admit Cards" fallbackBadge="AC" accent="blue" />
+  return (
+    <>
+      <EntityListClient items={items} basePath="/admit-cards" label="Admit Cards" fallbackBadge="AC" accent="blue" />
+      <FollowCTA />
+    </>
+  )
 }

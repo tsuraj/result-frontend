@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import FollowCTA from '../components/FollowCTA'
 import { pageMetadata } from '../lib/seo'
 
 export const metadata = pageMetadata({
@@ -23,6 +24,10 @@ export default function NotFound() {
         <Link href="/latest-jobs" className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50">
           Browse jobs
         </Link>
+      </div>
+
+      <div className="max-w-3xl mx-auto mt-12 text-left">
+        <FollowCTA />
       </div>
     </div>
   )

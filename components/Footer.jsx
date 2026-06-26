@@ -1,12 +1,6 @@
 import Link from 'next/link'
-import { FaFacebook, FaTwitter, FaInstagram, FaTelegramPlane, FaEnvelope, FaMobileAlt } from 'react-icons/fa'
-
-const SOCIAL_LINKS = [
-  { href: 'https://t.me/hiresarkar', label: 'Join us on Telegram', Icon: FaTelegramPlane },
-  { href: 'https://www.instagram.com/hiresarkardotcom', label: 'Follow on Instagram', Icon: FaInstagram },
-  { href: 'https://x.com/HireSarkar590', label: 'Follow on X (Twitter)', Icon: FaTwitter },
-  { href: 'https://www.facebook.com/people/hiresarkarcom/61590899590352/', label: 'Follow on Facebook', Icon: FaFacebook },
-]
+import { FaEnvelope, FaMobileAlt } from 'react-icons/fa'
+import { SOCIAL_LINKS } from '../lib/social'
 
 const footerLinks = [
   {

@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
+import FollowCTA from '../../../components/FollowCTA'
 import { getAdmitCard } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
 
@@ -46,6 +47,7 @@ export default async function AdmitCardDetailPage({ params }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([article, crumbs]) }} />
       <EntityDetail item={item} backTo="/admit-cards" backLabel="Admit Cards" ctaLabel="Download Admit Card" fallbackBadge="AC" />
+      <FollowCTA />
     </>
   )
 }

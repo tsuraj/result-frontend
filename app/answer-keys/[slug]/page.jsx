@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
+import FollowCTA from '../../../components/FollowCTA'
 import { getAnswerKey } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
 
@@ -46,6 +47,7 @@ export default async function AnswerKeyDetailPage({ params }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([article, crumbs]) }} />
       <EntityDetail item={item} backTo="/answer-keys" backLabel="Answer Keys" ctaLabel="Download Answer Key" fallbackBadge="AK" />
+      <FollowCTA />
     </>
   )
 }

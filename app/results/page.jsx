@@ -1,4 +1,5 @@
 import EntityListClient from '../../components/EntityListClient'
+import FollowCTA from '../../components/FollowCTA'
 import { getResults } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 
@@ -12,5 +13,10 @@ export const metadata = pageMetadata({
 
 export default async function ResultsPage() {
   const items = await getResults()
-  return <EntityListClient items={items} basePath="/results" label="Results" fallbackBadge="RES" accent="blue" />
+  return (
+    <>
+      <EntityListClient items={items} basePath="/results" label="Results" fallbackBadge="RES" accent="blue" />
+      <FollowCTA />
+    </>
+  )
 }
