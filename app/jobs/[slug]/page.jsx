@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import {
   FaArrowLeft, FaArrowRight, FaMapMarkerAlt, FaRupeeSign, FaUsers,
-  FaBriefcase, FaRegCalendarAlt,
+  FaBriefcase, FaRegCalendarAlt, FaRegClock,
 } from 'react-icons/fa'
 import { getJob } from '../../../lib/api'
 import FollowCTA from '../../../components/FollowCTA'
@@ -20,6 +20,27 @@ const toIso = (v) => {
   if (!v) return undefined
   const d = new Date(v)
   return Number.isNaN(d.getTime()) ? undefined : d.toISOString()
+}
+const daysFromNow = (v) => {
+  if (!v) return null
+  const d = new Date(v)
+  if (Number.isNaN(d.getTime())) return null
+  return Math.ceil((d - new Date()) / (1000 * 60 * 60 * 24))
+}
+
+// Decide which status badge to show next to the job title. Mirrors JobCard:
+// UPCOMING (start_date in future) > CLOSED > X D LEFT > OPEN. NEW is a
+// listing-card concept that doesn't apply on the detail page.
+function computeJobStatus({ startDate, lastDate }) {
+  const daysToStart = daysFromNow(startDate)
+  if (daysToStart !== null && daysToStart > 0) {
+    return { label: 'UPCOMING', tone: 'bg-blue-50 text-blue-700 border border-blue-200' }
+  }
+  const daysLeft = daysFromNow(lastDate)
+  if (daysLeft === null) return null
+  if (daysLeft < 0) return { label: 'CLOSED', tone: 'bg-gray-100 text-gray-600' }
+  if (daysLeft <= 7) return { label: `${daysLeft} D LEFT`, tone: 'bg-orange-50 text-orange-700 border border-orange-200', icon: FaRegClock }
+  return { label: 'OPEN', tone: 'bg-green-50 text-green-700' }
 }
 
 const EMPLOYMENT_TYPE_MAP = {
@@ -89,6 +110,10 @@ export default async function JobDetailPage({ params }) {
   const organization = d.organization || job.organization
   const qualification = Array.isArray(d.qualification) ? d.qualification : null
   const applyLink = d.apply_link || job.link
+  const status = computeJobStatus({
+    startDate: d.start_date,
+    lastDate: d.last_date || job.last_date,
+  })
 
   const jobPosting = {
     '@context': 'https://schema.org',
@@ -122,7 +147,14 @@ export default async function JobDetailPage({ params }) {
       </Link>
 
       <div className="rounded-xl border border-gray-200 bg-white p-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">{title}</h1>
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight min-w-0">{title}</h1>
+          {status && (
+            <span className={`inline-flex flex-shrink-0 items-center gap-1 text-[10px] font-bold tracking-wide px-2 py-1 rounded-full ${status.tone}`}>
+              {status.icon && <status.icon size={10} />} {status.label}
+            </span>
+          )}
+        </div>
         {organization && <p className="mt-1 text-sm text-gray-500">{organization}</p>}
         <div className="mt-4 flex flex-wrap gap-3">
           {applyLink && (

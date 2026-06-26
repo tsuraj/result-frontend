@@ -45,10 +45,19 @@ export default function JobCard({ job }) {
   const [bookmarked, setBookmarked] = useState(false)
   const slug = slugFromTitle(job.title)
   const daysLeft = daysFromNow(job.last_date || job.lastDate)
+  const daysToStart = daysFromNow(job.start_date || job.startDate)
   const posted = timeAgo(job.created_at || job.createdAt)
 
+  // Status priority:
+  //   1. UPCOMING — application window hasn't opened yet (start_date > today)
+  //   2. CLOSED   — last_date passed
+  //   3. X D LEFT — closing within a week
+  //   4. NEW      — just posted (within a few hours)
+  //   5. OPEN     — active, not closing imminently
   let status = null
-  if (daysLeft !== null) {
+  if (daysToStart !== null && daysToStart > 0) {
+    status = { label: 'UPCOMING', tone: 'bg-blue-50 text-blue-700 border border-blue-200' }
+  } else if (daysLeft !== null) {
     if (daysLeft < 0) status = { label: 'CLOSED', tone: 'bg-gray-100 text-gray-600' }
     else if (daysLeft <= 7) status = { label: `${daysLeft} D LEFT`, tone: 'bg-orange-50 text-orange-700 border border-orange-200', icon: true }
     else if (posted && /min|hour|today|just now/i.test(posted)) status = { label: 'NEW', tone: 'bg-black text-white' }
