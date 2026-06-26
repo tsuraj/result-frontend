@@ -53,7 +53,8 @@ export default function JobCard({ job }) {
   //   2. CLOSED   — last_date passed
   //   3. X D LEFT — closing within a week
   //   4. NEW      — just posted (within a few hours)
-  //   5. OPEN     — active, not closing imminently
+  //   5. OPEN     — active, not closing imminently (or open with no last_date)
+  // No badge when both dates are missing — we have nothing meaningful to say.
   let status = null
   if (daysToStart !== null && daysToStart > 0) {
     status = { label: 'UPCOMING', tone: 'bg-blue-50 text-blue-700 border border-blue-200' }
@@ -62,6 +63,9 @@ export default function JobCard({ job }) {
     else if (daysLeft <= 7) status = { label: `${daysLeft} D LEFT`, tone: 'bg-orange-50 text-orange-700 border border-orange-200', icon: true }
     else if (posted && /min|hour|today|just now/i.test(posted)) status = { label: 'NEW', tone: 'bg-black text-white' }
     else status = { label: 'OPEN', tone: 'bg-green-50 text-green-700' }
+  } else if (daysToStart !== null && daysToStart <= 0) {
+    // Job has started but has no closing date — treat as currently open.
+    status = { label: 'OPEN', tone: 'bg-green-50 text-green-700' }
   }
 
   const toggleBookmark = (e) => {

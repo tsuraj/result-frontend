@@ -31,16 +31,28 @@ const daysFromNow = (v) => {
 // Decide which status badge to show next to the job title. Mirrors JobCard:
 // UPCOMING (start_date in future) > CLOSED > X D LEFT > OPEN. NEW is a
 // listing-card concept that doesn't apply on the detail page.
+//
+// Missing-data semantics:
+//   start_date set & future                 → UPCOMING
+//   last_date set                           → falls through to that branch
+//   only start_date set & past, no last_date → OPEN (job started, no close announced)
+//   both missing                            → null (no badge)
 function computeJobStatus({ startDate, lastDate }) {
   const daysToStart = daysFromNow(startDate)
   if (daysToStart !== null && daysToStart > 0) {
     return { label: 'UPCOMING', tone: 'bg-blue-50 text-blue-700 border border-blue-200' }
   }
   const daysLeft = daysFromNow(lastDate)
-  if (daysLeft === null) return null
-  if (daysLeft < 0) return { label: 'CLOSED', tone: 'bg-gray-100 text-gray-600' }
-  if (daysLeft <= 7) return { label: `${daysLeft} D LEFT`, tone: 'bg-orange-50 text-orange-700 border border-orange-200', icon: FaRegClock }
-  return { label: 'OPEN', tone: 'bg-green-50 text-green-700' }
+  if (daysLeft !== null) {
+    if (daysLeft < 0) return { label: 'CLOSED', tone: 'bg-gray-100 text-gray-600' }
+    if (daysLeft <= 7) return { label: `${daysLeft} D LEFT`, tone: 'bg-orange-50 text-orange-700 border border-orange-200', icon: FaRegClock }
+    return { label: 'OPEN', tone: 'bg-green-50 text-green-700' }
+  }
+  // No last_date but start has already passed — treat as currently open.
+  if (daysToStart !== null && daysToStart <= 0) {
+    return { label: 'OPEN', tone: 'bg-green-50 text-green-700' }
+  }
+  return null
 }
 
 const EMPLOYMENT_TYPE_MAP = {
