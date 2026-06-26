@@ -4,7 +4,7 @@ import { authFetch, API_BASE } from '../../lib/authFetch'
 import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
 import { useRole, isAdminRole } from '../../lib/useRole'
 
-const emptyResult = { title: '', category: '', date: '' }
+const emptyResult = { title: '', category: '', date: '', published: false }
 
 const emptyDetail = {
   id: undefined,
@@ -70,7 +70,7 @@ export default function AdminResult() {
       if (!res.ok) throw new Error('Failed to load result')
       const full = await res.json()
       setEditingId(full.id)
-      setResultForm({ title: full.title || '', category: full.category || '', date: toDateInput(full.date) })
+      setResultForm({ title: full.title || '', category: full.category || '', date: toDateInput(full.date), published: Boolean(full.published) })
       const d = full.result_detail || {}
       setDetailForm({
         id: d.id,
@@ -115,6 +115,25 @@ export default function AdminResult() {
       if (target && target.id) setRemovedLinkIds((ids) => [...ids, target.id])
       return prev.filter((_, i) => i !== idx)
     })
+  }
+
+  const togglePublished = async (result) => {
+    setError('')
+    try {
+      const res = await authFetch(`${API_BASE}/results/${result.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ result: { published: !result.published } }),
+      })
+      if (!res.ok) {
+        const txt = await res.text()
+        throw new Error(`Toggle failed: ${txt}`)
+      }
+      setResults((prev) => prev.map((r) => (r.id === result.id ? { ...r, published: !result.published } : r)))
+      triggerRevalidate(revalidationPaths.results)
+    } catch (e) {
+      setError(e.message)
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -204,6 +223,16 @@ export default function AdminResult() {
             {input('Title', resultForm.title, (v) => setResultForm({ ...resultForm, title: v }))}
             {input('Category', resultForm.category, (v) => setResultForm({ ...resultForm, category: v }))}
             {input('Date', resultForm.date, (v) => setResultForm({ ...resultForm, date: v }), 'date')}
+            <label className="flex items-center gap-2 text-xs sm:col-span-2">
+              <input
+                type="checkbox"
+                checked={Boolean(resultForm.published)}
+                onChange={(e) => setResultForm({ ...resultForm, published: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <span className="font-medium text-gray-700">Publish (visible on public site)</span>
+              <span className="text-[10px] text-gray-500">Uncheck to save as a draft.</span>
+            </label>
           </div>
 
           <h3 className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-500">Result Details</h3>
@@ -256,10 +285,19 @@ export default function AdminResult() {
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] text-gray-400">#{r.id}</span>
                 <p className="truncate text-xs font-semibold text-gray-800">{r.title}</p>
+                {!r.published && (
+                  <span className="rounded-full bg-amber-100 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
+                )}
               </div>
               <p className="truncate text-[11px] text-gray-500">{r.category || '-'} · {toDateInput(r.date) || '-'}</p>
             </div>
             <div className="flex shrink-0 gap-1">
+              <button
+                onClick={() => togglePublished(r)}
+                className={`rounded px-2 py-0.5 text-[10px] font-semibold ${r.published ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-green-100 text-green-800 hover:bg-green-200'}`}
+              >
+                {r.published ? 'Unpub' : 'Pub'}
+              </button>
               <button onClick={() => startEdit(r)} className="rounded bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-200">Edit</button>
               {canDelete && (
                 <button onClick={() => handleDelete(r.id)} className="rounded bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-700 hover:bg-red-200">Del</button>
@@ -277,19 +315,33 @@ export default function AdminResult() {
               <th className="px-2 py-1.5">Title</th>
               <th className="px-2 py-1.5">Category</th>
               <th className="px-2 py-1.5">Date</th>
+              <th className="px-2 py-1.5">Status</th>
               <th className="px-2 py-1.5 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {loading && <tr><td colSpan="5" className="px-2 py-3 text-center text-gray-500">Loading...</td></tr>}
-            {!loading && results.length === 0 && <tr><td colSpan="5" className="px-2 py-3 text-center text-gray-500">No results found.</td></tr>}
+            {loading && <tr><td colSpan="6" className="px-2 py-3 text-center text-gray-500">Loading...</td></tr>}
+            {!loading && results.length === 0 && <tr><td colSpan="6" className="px-2 py-3 text-center text-gray-500">No results found.</td></tr>}
             {results.map((r) => (
               <tr key={r.id} className="border-t hover:bg-gray-50">
                 <td className="px-2 py-1 text-gray-500">{r.id}</td>
                 <td className="px-2 py-1 font-medium">{r.title}</td>
                 <td className="px-2 py-1">{r.category || '-'}</td>
                 <td className="px-2 py-1">{toDateInput(r.date) || '-'}</td>
+                <td className="px-2 py-1">
+                  {r.published ? (
+                    <span className="rounded-full bg-green-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-green-800">Live</span>
+                  ) : (
+                    <span className="rounded-full bg-amber-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
+                  )}
+                </td>
                 <td className="px-2 py-1 text-right whitespace-nowrap">
+                  <button
+                    onClick={() => togglePublished(r)}
+                    className={`mr-1 rounded px-2 py-0.5 text-[11px] font-semibold ${r.published ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-green-100 text-green-800 hover:bg-green-200'}`}
+                  >
+                    {r.published ? 'Unpublish' : 'Publish'}
+                  </button>
                   <button onClick={() => startEdit(r)} className="mr-1 rounded bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-200">Edit</button>
                   {canDelete && (
                     <button onClick={() => handleDelete(r.id)} className="rounded bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-700 hover:bg-red-200">Delete</button>

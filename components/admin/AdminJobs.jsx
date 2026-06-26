@@ -4,7 +4,7 @@ import { authFetch, API_BASE } from '../../lib/authFetch'
 import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
 import { useRole, isAdminRole } from '../../lib/useRole'
 
-const emptyJob = { title: '', organization: '', last_date: '' }
+const emptyJob = { title: '', organization: '', last_date: '', published: false }
 
 const emptyDetail = {
   type: 'Full Time',
@@ -111,6 +111,7 @@ export default function AdminJobs() {
         title: full.title || '',
         organization: full.organization || '',
         last_date: toDateInput(full.last_date),
+        published: Boolean(full.published),
       })
       const d = full.job_detail || {}
       setDetailForm({
@@ -150,6 +151,25 @@ export default function AdminJobs() {
       if (!res.ok && res.status !== 204) throw new Error('Failed to delete')
       setJobs((prev) => prev.filter((j) => j.id !== id))
       if (editingId === id) resetForm()
+      triggerRevalidate(revalidationPaths.jobs)
+    } catch (e) {
+      setError(e.message)
+    }
+  }
+
+  const togglePublished = async (job) => {
+    setError('')
+    try {
+      const res = await authFetch(`${API_BASE}/jobs/${job.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ job: { published: !job.published } }),
+      })
+      if (!res.ok) {
+        const txt = await res.text()
+        throw new Error(`Toggle failed: ${txt}`)
+      }
+      setJobs((prev) => prev.map((j) => (j.id === job.id ? { ...j, published: !job.published } : j)))
       triggerRevalidate(revalidationPaths.jobs)
     } catch (e) {
       setError(e.message)
@@ -245,6 +265,16 @@ export default function AdminJobs() {
             {input('Title', jobForm.title, (v) => setJobForm({ ...jobForm, title: v }))}
             {input('Organization', jobForm.organization, (v) => setJobForm({ ...jobForm, organization: v }))}
             {input('Last Date', jobForm.last_date, (v) => setJobForm({ ...jobForm, last_date: v }), 'date')}
+            <label className="flex items-center gap-2 text-xs sm:col-span-2">
+              <input
+                type="checkbox"
+                checked={Boolean(jobForm.published)}
+                onChange={(e) => setJobForm({ ...jobForm, published: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <span className="font-medium text-gray-700">Publish (visible on public site)</span>
+              <span className="text-[10px] text-gray-500">Uncheck to save as a draft.</span>
+            </label>
           </div>
 
           <h3 className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-500">Job Details</h3>
@@ -307,10 +337,19 @@ export default function AdminJobs() {
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] text-gray-400">#{j.id}</span>
                 <p className="truncate text-xs font-semibold text-gray-800">{j.title}</p>
+                {!j.published && (
+                  <span className="rounded-full bg-amber-100 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
+                )}
               </div>
               <p className="truncate text-[11px] text-gray-500">{j.organization || '-'} · {toDateInput(j.last_date) || '-'}</p>
             </div>
             <div className="flex shrink-0 gap-1">
+              <button
+                onClick={() => togglePublished(j)}
+                className={`rounded px-2 py-0.5 text-[10px] font-semibold ${j.published ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-green-100 text-green-800 hover:bg-green-200'}`}
+              >
+                {j.published ? 'Unpub' : 'Pub'}
+              </button>
               <button onClick={() => startEdit(j)} className="rounded bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-200">Edit</button>
               {canDelete && (
                 <button onClick={() => handleDelete(j.id)} className="rounded bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-700 hover:bg-red-200">Del</button>
@@ -328,19 +367,33 @@ export default function AdminJobs() {
               <th className="px-2 py-1.5">Title</th>
               <th className="px-2 py-1.5">Organization</th>
               <th className="px-2 py-1.5">Last Date</th>
+              <th className="px-2 py-1.5">Status</th>
               <th className="px-2 py-1.5 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {loading && <tr><td colSpan="5" className="px-2 py-3 text-center text-gray-500">Loading...</td></tr>}
-            {!loading && jobs.length === 0 && <tr><td colSpan="5" className="px-2 py-3 text-center text-gray-500">No jobs found.</td></tr>}
+            {loading && <tr><td colSpan="6" className="px-2 py-3 text-center text-gray-500">Loading...</td></tr>}
+            {!loading && jobs.length === 0 && <tr><td colSpan="6" className="px-2 py-3 text-center text-gray-500">No jobs found.</td></tr>}
             {jobs.map((j) => (
               <tr key={j.id} className="border-t hover:bg-gray-50">
                 <td className="px-2 py-1 text-gray-500">{j.id}</td>
                 <td className="px-2 py-1 font-medium">{j.title}</td>
                 <td className="px-2 py-1">{j.organization || '-'}</td>
                 <td className="px-2 py-1">{toDateInput(j.last_date) || '-'}</td>
+                <td className="px-2 py-1">
+                  {j.published ? (
+                    <span className="rounded-full bg-green-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-green-800">Live</span>
+                  ) : (
+                    <span className="rounded-full bg-amber-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
+                  )}
+                </td>
                 <td className="px-2 py-1 text-right whitespace-nowrap">
+                  <button
+                    onClick={() => togglePublished(j)}
+                    className={`mr-1 rounded px-2 py-0.5 text-[11px] font-semibold ${j.published ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-green-100 text-green-800 hover:bg-green-200'}`}
+                  >
+                    {j.published ? 'Unpublish' : 'Publish'}
+                  </button>
                   <button onClick={() => startEdit(j)} className="mr-1 rounded bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-200">Edit</button>
                   {canDelete && (
                     <button onClick={() => handleDelete(j.id)} className="rounded bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-700 hover:bg-red-200">Delete</button>

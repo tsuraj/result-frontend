@@ -44,6 +44,7 @@ export default function AdminEntityManager({ config }) {
     title: '',
     category: '',
     date: '',
+    published: false,
     ...Object.fromEntries(extraFields.map((f) => [f.name, ''])),
   }
 
@@ -99,6 +100,7 @@ export default function AdminEntityManager({ config }) {
         title: full.title || '',
         category: full.category || '',
         date: toDateInput(full.date),
+        published: Boolean(full.published),
         ...Object.fromEntries(extraFields.map((f) => [f.name, full[f.name] || ''])),
       })
       const d = full[detailKey] || {}
@@ -137,6 +139,26 @@ export default function AdminEntityManager({ config }) {
       if (!res.ok && res.status !== 204) throw new Error('Failed to delete')
       setItems((prev) => prev.filter((r) => r.id !== id))
       if (editingId === id) resetForm()
+      triggerRevalidate(revalidationPaths[resource])
+    } catch (e) {
+      setError(e.message)
+    }
+  }
+
+  // Quick toggle from the list row — patches only the published flag.
+  const togglePublished = async (item) => {
+    setError('')
+    try {
+      const res = await authFetch(`${API_BASE}/${resource}/${item.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [payloadKey]: { published: !item.published } }),
+      })
+      if (!res.ok) {
+        const txt = await res.text()
+        throw new Error(`Toggle failed: ${txt}`)
+      }
+      setItems((prev) => prev.map((r) => (r.id === item.id ? { ...r, published: !item.published } : r)))
       triggerRevalidate(revalidationPaths[resource])
     } catch (e) {
       setError(e.message)
@@ -260,6 +282,16 @@ export default function AdminEntityManager({ config }) {
               </React.Fragment>
             ))}
             {input('Date', entityForm.date, (v) => setEntityForm({ ...entityForm, date: v }), 'date')}
+            <label className="flex items-center gap-2 text-xs sm:col-span-2">
+              <input
+                type="checkbox"
+                checked={Boolean(entityForm.published)}
+                onChange={(e) => setEntityForm({ ...entityForm, published: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <span className="font-medium text-gray-700">Publish (visible on public site)</span>
+              <span className="text-[10px] text-gray-500">Uncheck to save as a draft.</span>
+            </label>
           </div>
 
           <h3 className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-500">
@@ -341,12 +373,21 @@ export default function AdminEntityManager({ config }) {
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] text-gray-400">#{r.id}</span>
                 <p className="truncate text-xs font-semibold text-gray-800">{r.title}</p>
+                {!r.published && (
+                  <span className="rounded-full bg-amber-100 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
+                )}
               </div>
               <p className="truncate text-[11px] text-gray-500">
                 {r.category || '-'} · {toDateInput(r.date) || '-'}
               </p>
             </div>
             <div className="flex shrink-0 gap-1">
+              <button
+                onClick={() => togglePublished(r)}
+                className={`rounded px-2 py-0.5 text-[10px] font-semibold ${r.published ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-green-100 text-green-800 hover:bg-green-200'}`}
+              >
+                {r.published ? 'Unpub' : 'Pub'}
+              </button>
               <button onClick={() => startEdit(r)} className="rounded bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700 hover:bg-blue-200">
                 Edit
               </button>
@@ -369,15 +410,16 @@ export default function AdminEntityManager({ config }) {
               <th className="px-2 py-1.5">Title</th>
               <th className="px-2 py-1.5">Category</th>
               <th className="px-2 py-1.5">Date</th>
+              <th className="px-2 py-1.5">Status</th>
               <th className="px-2 py-1.5 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
-              <tr><td colSpan="5" className="px-2 py-3 text-center text-gray-500">Loading...</td></tr>
+              <tr><td colSpan="6" className="px-2 py-3 text-center text-gray-500">Loading...</td></tr>
             )}
             {!loading && items.length === 0 && (
-              <tr><td colSpan="5" className="px-2 py-3 text-center text-gray-500">No {entityLabel.toLowerCase()}s found.</td></tr>
+              <tr><td colSpan="6" className="px-2 py-3 text-center text-gray-500">No {entityLabel.toLowerCase()}s found.</td></tr>
             )}
             {items.map((r) => (
               <tr key={r.id} className="border-t hover:bg-gray-50">
@@ -385,7 +427,20 @@ export default function AdminEntityManager({ config }) {
                 <td className="px-2 py-1 font-medium">{r.title}</td>
                 <td className="px-2 py-1">{r.category || '-'}</td>
                 <td className="px-2 py-1">{toDateInput(r.date) || '-'}</td>
+                <td className="px-2 py-1">
+                  {r.published ? (
+                    <span className="rounded-full bg-green-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-green-800">Live</span>
+                  ) : (
+                    <span className="rounded-full bg-amber-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
+                  )}
+                </td>
                 <td className="px-2 py-1 text-right whitespace-nowrap">
+                  <button
+                    onClick={() => togglePublished(r)}
+                    className={`mr-1 rounded px-2 py-0.5 text-[11px] font-semibold ${r.published ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-green-100 text-green-800 hover:bg-green-200'}`}
+                  >
+                    {r.published ? 'Unpublish' : 'Publish'}
+                  </button>
                   <button onClick={() => startEdit(r)} className="mr-1 rounded bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-200">Edit</button>
                   {canDelete && (
                     <button onClick={() => handleDelete(r.id)} className="rounded bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-700 hover:bg-red-200">Delete</button>
