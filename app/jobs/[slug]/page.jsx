@@ -148,6 +148,10 @@ export default async function JobDetailPage({ params }) {
         <Tile icon={FaRegCalendarAlt} label="Last date" value={fmtDate(d.last_date || job.last_date)} />
       </div>
 
+      {/* Important dates are time-sensitive — render high so users see them
+          without scrolling past description/eligibility. */}
+      {d.important_dates && <Section title="Important Dates"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.important_dates}</p></Section>}
+
       {d.description && <Section title="Description"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.description}</p></Section>}
       {d.eligibility && <Section title="Eligibility"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.eligibility}</p></Section>}
       {d.selection_process && <Section title="Selection Process"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.selection_process}</p></Section>}
@@ -166,7 +170,6 @@ export default async function JobDetailPage({ params }) {
       )}
 
       {d.how_to_apply && <Section title="How to apply"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.how_to_apply}</p></Section>}
-      {d.important_dates && <Section title="Important Dates"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.important_dates}</p></Section>}
 
       <RelatedTopicLink kind="jobs" fields={[title, organization, d.location]} />
       <FollowCTA />
