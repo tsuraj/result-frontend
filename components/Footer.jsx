@@ -14,6 +14,16 @@ const footerLinks = [
     ],
   },
   {
+    title: 'Browse by Category',
+    links: [
+      { name: 'Railway Jobs', path: '/category/railway' },
+      { name: 'Banking Jobs', path: '/category/banking' },
+      { name: 'SSC Exams', path: '/category/ssc' },
+      { name: 'UPSC Exams', path: '/category/upsc' },
+      { name: 'Defence Jobs', path: '/category/defence' },
+    ],
+  },
+  {
     title: 'Help & Support',
     links: [
       { name: 'Contact Us', path: '/contact' },
