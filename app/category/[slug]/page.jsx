@@ -107,7 +107,7 @@ export default async function CategoryPage({ params }) {
       {/* Jobs */}
       {jobs.length > 0 && (
         <section className="mb-10">
-          <SectionHead title={`${topic.name} Jobs`} count={counts.jobs} viewAllHref="/latest-jobs" viewAllLabel={`View all ${topic.name} jobs`} />
+          <SectionHead title={`${topic.name} Jobs`} count={counts.jobs} viewAllHref={`/latest-jobs?topic=${topic.slug}`} viewAllLabel={`View all ${topic.name} jobs`} />
           <div className="grid grid-cols-1 gap-4">
             {jobs.map((job) => <JobCard key={job.id} job={job} />)}
           </div>
@@ -117,7 +117,7 @@ export default async function CategoryPage({ params }) {
       {/* Results */}
       {results.length > 0 && (
         <section className="mb-10">
-          <SectionHead title={`${topic.name} Results`} count={counts.results} viewAllHref="/results" viewAllLabel={`View all ${topic.name} results`} />
+          <SectionHead title={`${topic.name} Results`} count={counts.results} viewAllHref={`/results?topic=${topic.slug}`} viewAllLabel={`View all ${topic.name} results`} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {results.map((r) => <SimpleRow key={r.id} item={r} basePath="/results" />)}
           </div>
@@ -127,7 +127,7 @@ export default async function CategoryPage({ params }) {
       {/* Admit Cards */}
       {admit_cards.length > 0 && (
         <section className="mb-10">
-          <SectionHead title={`${topic.name} Admit Cards`} count={counts.admit_cards} viewAllHref="/admit-cards" viewAllLabel={`View all ${topic.name} admit cards`} />
+          <SectionHead title={`${topic.name} Admit Cards`} count={counts.admit_cards} viewAllHref={`/admit-cards?topic=${topic.slug}`} viewAllLabel={`View all ${topic.name} admit cards`} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {admit_cards.map((a) => <SimpleRow key={a.id} item={a} basePath="/admit-cards" />)}
           </div>
@@ -137,7 +137,7 @@ export default async function CategoryPage({ params }) {
       {/* Answer Keys */}
       {answer_keys.length > 0 && (
         <section className="mb-10">
-          <SectionHead title={`${topic.name} Answer Keys`} count={counts.answer_keys} viewAllHref="/answer-keys" viewAllLabel={`View all ${topic.name} answer keys`} />
+          <SectionHead title={`${topic.name} Answer Keys`} count={counts.answer_keys} viewAllHref={`/answer-keys?topic=${topic.slug}`} viewAllLabel={`View all ${topic.name} answer keys`} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {answer_keys.map((a) => <SimpleRow key={a.id} item={a} basePath="/answer-keys" />)}
           </div>
@@ -147,7 +147,7 @@ export default async function CategoryPage({ params }) {
       {/* Syllabi */}
       {syllabi.length > 0 && (
         <section className="mb-10">
-          <SectionHead title={`${topic.name} Syllabus`} count={counts.syllabi} viewAllHref="/syllabus" viewAllLabel={`View all ${topic.name} syllabi`} />
+          <SectionHead title={`${topic.name} Syllabus`} count={counts.syllabi} viewAllHref={`/syllabus?topic=${topic.slug}`} viewAllLabel={`View all ${topic.name} syllabi`} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {syllabi.map((s) => <SimpleRow key={s.id} item={s} basePath="/syllabus" />)}
           </div>

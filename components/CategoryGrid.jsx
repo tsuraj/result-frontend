@@ -15,18 +15,18 @@ export default function CategoryGrid({ summary }) {
     <section className="container pt-4 pb-2" aria-label="Popular categories">
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs text-gray-500 mr-1">Popular categories:</span>
-        {TOPICS.map(({ slug, name, Icon, accent }) => {
+        {TOPICS.map(({ slug, name, Icon, accent, iconClass }) => {
           const total = counts[slug]
           return (
             <Link
               key={slug}
               href={`/category/${slug}`}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition hover:shadow-sm ${accent}`}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition ${accent}`}
             >
-              <Icon size={11} />
+              <Icon size={11} className={iconClass} />
               <span>{name}</span>
               {typeof total === 'number' && total > 0 && (
-                <span className="text-[10px] font-bold opacity-70">· {total}</span>
+                <span className="text-[10px] font-bold text-gray-500">· {total}</span>
               )}
             </Link>
           )
