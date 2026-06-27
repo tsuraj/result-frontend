@@ -224,27 +224,27 @@ export default function AdminEntityManager({ config }) {
   }
 
   const input = (label, value, onChange, type = 'text') => (
-    <label className="flex flex-col text-xs">
-      <span className="mb-0.5 font-medium text-gray-600">{label}</span>
+    <label className="flex flex-col text-sm">
+      <span className="mb-1 text-xs font-medium text-gray-600">{label}</span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded border border-gray-300 px-2 py-1 text-xs focus:border-blue-500 focus:outline-none"
+        className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/40"
       />
     </label>
   )
 
-  const textarea = (label, value, onChange, hint) => (
-    <label className="flex flex-col text-xs md:col-span-2">
-      <span className="mb-0.5 font-medium text-gray-600">{label}</span>
+  const textarea = (label, value, onChange, hint, rows = 5) => (
+    <label className="flex flex-col text-sm md:col-span-2">
+      <span className="mb-1 text-xs font-medium text-gray-600">{label}</span>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        rows={2}
-        className="rounded border border-gray-300 px-2 py-1 text-xs focus:border-blue-500 focus:outline-none"
+        rows={rows}
+        className="resize-y rounded-md border border-gray-300 px-3 py-2 text-sm leading-relaxed focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/40"
       />
-      {hint && <span className="mt-0.5 text-[10px] text-gray-500">{hint}</span>}
+      {hint && <span className="mt-1 text-[11px] text-gray-500">{hint}</span>}
     </label>
   )
 
@@ -302,10 +302,10 @@ export default function AdminEntityManager({ config }) {
             {input('Notification Link', detailForm.notification_link, (v) => setDetailForm({ ...detailForm, notification_link: v }))}
             {input('Website Link', detailForm.website_link, (v) => setDetailForm({ ...detailForm, website_link: v }))}
             {input('Download Link', detailForm.download_link, (v) => setDetailForm({ ...detailForm, download_link: v }))}
-            {textarea('Description', detailForm.description, (v) => setDetailForm({ ...detailForm, description: v }))}
-            {textarea('Important Dates', detailForm.important_dates, (v) => setDetailForm({ ...detailForm, important_dates: v }))}
-            {textarea('Eligibility', detailForm.eligibility, (v) => setDetailForm({ ...detailForm, eligibility: v }))}
-            {textarea('Selection Process', detailForm.selection_process, (v) => setDetailForm({ ...detailForm, selection_process: v }))}
+            {textarea('Description', detailForm.description, (v) => setDetailForm({ ...detailForm, description: v }), null, 10)}
+            {textarea('Important Dates', detailForm.important_dates, (v) => setDetailForm({ ...detailForm, important_dates: v }), null, 6)}
+            {textarea('Eligibility', detailForm.eligibility, (v) => setDetailForm({ ...detailForm, eligibility: v }), null, 8)}
+            {textarea('Selection Process', detailForm.selection_process, (v) => setDetailForm({ ...detailForm, selection_process: v }), null, 8)}
           </div>
 
           {hasLinks && (

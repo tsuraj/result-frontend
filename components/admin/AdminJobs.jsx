@@ -221,27 +221,30 @@ export default function AdminJobs() {
   }
 
   const input = (label, value, onChange, type = 'text') => (
-    <label className="flex flex-col text-xs">
-      <span className="mb-0.5 font-medium text-gray-600">{label}</span>
+    <label className="flex flex-col text-sm">
+      <span className="mb-1 text-xs font-medium text-gray-600">{label}</span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded border border-gray-300 px-2 py-1 text-xs focus:border-blue-500 focus:outline-none"
+        className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/40"
       />
     </label>
   )
 
-  const textarea = (label, value, onChange, hint) => (
-    <label className="flex flex-col text-xs md:col-span-2">
-      <span className="mb-0.5 font-medium text-gray-600">{label}</span>
+  // `rows` defaults to 5 (was 2) so admins can actually see what they're
+  // writing. Long-form fields (description / eligibility / how_to_apply)
+  // override with rows={10}. `resize-y` lets admins drag bigger when needed.
+  const textarea = (label, value, onChange, hint, rows = 5) => (
+    <label className="flex flex-col text-sm md:col-span-2">
+      <span className="mb-1 text-xs font-medium text-gray-600">{label}</span>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        rows={2}
-        className="rounded border border-gray-300 px-2 py-1 text-xs focus:border-blue-500 focus:outline-none"
+        rows={rows}
+        className="resize-y rounded-md border border-gray-300 px-3 py-2 text-sm leading-relaxed focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/40"
       />
-      {hint && <span className="mt-0.5 text-[10px] text-gray-500">{hint}</span>}
+      {hint && <span className="mt-1 text-[11px] text-gray-500">{hint}</span>}
     </label>
   )
 
@@ -289,11 +292,11 @@ export default function AdminJobs() {
             {input('Total Posts', detailForm.total_posts, (v) => setDetailForm({ ...detailForm, total_posts: v }), 'number')}
             {input('Notification Link', detailForm.notification_link, (v) => setDetailForm({ ...detailForm, notification_link: v }))}
             {input('Website Link', detailForm.website_link, (v) => setDetailForm({ ...detailForm, website_link: v }))}
-            {textarea('Description', detailForm.description, (v) => setDetailForm({ ...detailForm, description: v }))}
-            {textarea('Eligibility', detailForm.eligibility, (v) => setDetailForm({ ...detailForm, eligibility: v }))}
-            {textarea('Selection Process', detailForm.selection_process, (v) => setDetailForm({ ...detailForm, selection_process: v }))}
-            {textarea('Important Dates', detailForm.important_dates, (v) => setDetailForm({ ...detailForm, important_dates: v }))}
-            {textarea('How To Apply', detailForm.how_to_apply, (v) => setDetailForm({ ...detailForm, how_to_apply: v }))}
+            {textarea('Description', detailForm.description, (v) => setDetailForm({ ...detailForm, description: v }), null, 10)}
+            {textarea('Eligibility', detailForm.eligibility, (v) => setDetailForm({ ...detailForm, eligibility: v }), null, 8)}
+            {textarea('Selection Process', detailForm.selection_process, (v) => setDetailForm({ ...detailForm, selection_process: v }), null, 8)}
+            {textarea('Important Dates', detailForm.important_dates, (v) => setDetailForm({ ...detailForm, important_dates: v }), null, 6)}
+            {textarea('How To Apply', detailForm.how_to_apply, (v) => setDetailForm({ ...detailForm, how_to_apply: v }), null, 10)}
             {textarea('Application Fees', detailForm.application_fees, (v) => setDetailForm({ ...detailForm, application_fees: v }), 'One per line as "Category: Amount"')}
             {textarea('Payment Mode', detailForm.payment_mode, (v) => setDetailForm({ ...detailForm, payment_mode: v }), 'Comma-separated')}
             {textarea('Qualification', detailForm.qualification, (v) => setDetailForm({ ...detailForm, qualification: v }), 'Comma-separated')}
