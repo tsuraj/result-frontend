@@ -4,6 +4,7 @@ import { FaArrowRight } from 'react-icons/fa'
 import JobCard from '../../../components/JobCard'
 import FollowCTA from '../../../components/FollowCTA'
 import Breadcrumbs from '../../../components/Breadcrumbs'
+import InlineFollowStrip from '../../../components/InlineFollowStrip'
 import { getTopic } from '../../../lib/api'
 import { pageMetadata, breadcrumb, SITE_URL } from '../../../lib/seo'
 import { TOPIC_FAQS } from '../../../lib/topic-faqs'
@@ -127,6 +128,8 @@ export default async function CategoryPage({ params }) {
           </p>
         )}
       </section>
+
+      <InlineFollowStrip />
 
       {/* Jobs */}
       {jobs.length > 0 && (

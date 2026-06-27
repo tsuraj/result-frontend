@@ -1,6 +1,7 @@
 import EntityListClient from '../../components/EntityListClient'
 import FollowCTA from '../../components/FollowCTA'
 import ActiveTopicChip from '../../components/ActiveTopicChip'
+import InlineFollowStrip from '../../components/InlineFollowStrip'
 import { getAdmitCards } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 import { TOPICS } from '../../lib/topics'
@@ -28,6 +29,7 @@ export default async function AdmitCardsPage({ searchParams }) {
   return (
     <>
       <ActiveTopicChip topicSlug={topic} clearHref="/admit-cards" />
+      <InlineFollowStrip />
       <EntityListClient items={items} basePath="/admit-cards" label="Admit Cards" fallbackBadge="AC" accent="blue" />
       <FollowCTA />
     </>

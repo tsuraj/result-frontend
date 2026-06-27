@@ -1,6 +1,7 @@
 import EntityListClient from '../../components/EntityListClient'
 import FollowCTA from '../../components/FollowCTA'
 import ActiveTopicChip from '../../components/ActiveTopicChip'
+import InlineFollowStrip from '../../components/InlineFollowStrip'
 import { getSyllabi } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 import { TOPICS } from '../../lib/topics'
@@ -28,6 +29,7 @@ export default async function SyllabusPage({ searchParams }) {
   return (
     <>
       <ActiveTopicChip topicSlug={topic} clearHref="/syllabus" />
+      <InlineFollowStrip />
       <EntityListClient items={items} basePath="/syllabus" label="Syllabus" fallbackBadge="SY" accent="purple" />
       <FollowCTA />
     </>

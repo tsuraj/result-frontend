@@ -9,6 +9,7 @@ import Header from '../components/Header'
 import LayoutShell from '../components/LayoutShell'
 import Analytics from '../components/Analytics'
 import NotificationBar from '../components/NotificationBar'
+import StickyMobileFollow from '../components/StickyMobileFollow'
 import { getJobStats } from '../lib/api'
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from '../lib/seo'
 import { SOCIAL_URLS } from '../lib/social'
@@ -86,6 +87,7 @@ export default async function RootLayout({ children }) {
           <Header activeJobs={activeJobs} />
           <LayoutShell>{children}</LayoutShell>
         </div>
+        <StickyMobileFollow />
         <Analytics />
       </body>
     </html>

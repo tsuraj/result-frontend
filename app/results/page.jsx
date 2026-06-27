@@ -1,6 +1,7 @@
 import EntityListClient from '../../components/EntityListClient'
 import FollowCTA from '../../components/FollowCTA'
 import ActiveTopicChip from '../../components/ActiveTopicChip'
+import InlineFollowStrip from '../../components/InlineFollowStrip'
 import { getResults } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 import { TOPICS } from '../../lib/topics'
@@ -28,6 +29,7 @@ export default async function ResultsPage({ searchParams }) {
   return (
     <>
       <ActiveTopicChip topicSlug={topic} clearHref="/results" />
+      <InlineFollowStrip />
       <EntityListClient items={items} basePath="/results" label="Results" fallbackBadge="RES" accent="blue" />
       <FollowCTA />
     </>

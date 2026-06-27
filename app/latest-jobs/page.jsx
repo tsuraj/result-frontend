@@ -3,6 +3,7 @@ import { FaSearch, FaArrowRight, FaArrowLeft } from 'react-icons/fa'
 import JobCard from '../../components/JobCard'
 import FollowCTA from '../../components/FollowCTA'
 import ActiveTopicChip from '../../components/ActiveTopicChip'
+import InlineFollowStrip from '../../components/InlineFollowStrip'
 import { getJobs } from '../../lib/api'
 import { pageMetadata } from '../../lib/seo'
 import { TOPICS } from '../../lib/topics'
@@ -93,6 +94,8 @@ export default async function LatestJobsPage({ searchParams }) {
           </Link>
         )}
       </div>
+
+      <InlineFollowStrip />
 
       <div className="grid grid-cols-1 gap-4">
         {jobs.map((job) => (
