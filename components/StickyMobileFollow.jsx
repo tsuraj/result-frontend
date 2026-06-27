@@ -5,7 +5,10 @@ import { FaTelegramPlane, FaTimes } from 'react-icons/fa'
 import { SOCIAL_LINKS } from '../lib/social'
 
 const DISMISS_KEY = 'hire_sarkar_sticky_follow_dismissed_at'
-const DISMISS_DAYS = 7
+// Re-show after 1 day. Long enough to honor the dismiss for the current
+// session and the next visit; short enough that a return user still gets
+// a follow opportunity.
+const DISMISS_DAYS = 1
 
 // Paths we DON'T want a floating CTA on (auth, admin, narrow conversion
 // forms where any distraction hurts).

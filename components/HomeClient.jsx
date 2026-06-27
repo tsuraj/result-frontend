@@ -425,11 +425,13 @@ export default function HomeClient({ initialStats = {}, initialUpdates = [], cat
         </div>
 
         <aside className="lg:col-span-3 space-y-5">
+          {/* Desktop only — mobile users already have StickyMobileFollow,
+              so this static card would just stack with the floating button. */}
           <a
             href="https://t.me/hiresarkar"
             target="_blank"
             rel="noopener noreferrer"
-            className="block rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 hover:border-blue-300 hover:shadow-sm transition-all"
+            className="hidden lg:block rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-5 hover:border-blue-300 hover:shadow-sm transition-all"
           >
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">

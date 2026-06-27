@@ -53,7 +53,7 @@ export default async function AdmitCardDetailPage({ params }) {
         { name: 'Admit Cards', href: '/admit-cards' },
         { name: item.title },
       ]} />
-      <EntityDetail item={item} ctaLabel="Download Admit Card" fallbackBadge="AC" />
+      <EntityDetail item={item} ctaLabel="Download Admit Card" fallbackBadge="AC" telegramKind="admit card" />
       <RelatedTopicLink kind="admit cards" fields={[item.title, item.category]} />
       <FollowCTA />
     </>

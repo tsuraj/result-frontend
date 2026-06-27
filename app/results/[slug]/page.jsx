@@ -53,7 +53,7 @@ export default async function ResultDetailPage({ params }) {
         { name: 'Results', href: '/results' },
         { name: item.title },
       ]} />
-      <EntityDetail item={item} ctaLabel="Check Result" fallbackBadge="RES" />
+      <EntityDetail item={item} ctaLabel="Check Result" fallbackBadge="RES" telegramKind="result" />
       <RelatedTopicLink kind="results" fields={[item.title, item.category]} />
       <FollowCTA />
     </>

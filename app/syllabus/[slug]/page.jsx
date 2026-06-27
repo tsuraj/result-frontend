@@ -53,7 +53,7 @@ export default async function SyllabusDetailPage({ params }) {
         { name: 'Syllabus', href: '/syllabus' },
         { name: item.title },
       ]} />
-      <EntityDetail item={item} ctaLabel="View Syllabus" fallbackBadge="SY" />
+      <EntityDetail item={item} ctaLabel="View Syllabus" fallbackBadge="SY" telegramKind="syllabus" />
       <RelatedTopicLink kind="syllabi" fields={[item.title, item.category, item.exam]} />
       <FollowCTA />
     </>

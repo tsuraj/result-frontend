@@ -7,6 +7,7 @@ import { getJob } from '../../../lib/api'
 import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
 import Breadcrumbs from '../../../components/Breadcrumbs'
+import InlineTelegramNudge from '../../../components/InlineTelegramNudge'
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, pageMetadata, breadcrumb } from '../../../lib/seo'
 
 export const revalidate = 60
@@ -183,6 +184,7 @@ export default async function JobDetailPage({ params }) {
             <a href={d.website_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50">Official Website</a>
           )}
         </div>
+        <InlineTelegramNudge kind="job" />
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">

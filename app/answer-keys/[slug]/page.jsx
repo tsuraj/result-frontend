@@ -53,7 +53,7 @@ export default async function AnswerKeyDetailPage({ params }) {
         { name: 'Answer Keys', href: '/answer-keys' },
         { name: item.title },
       ]} />
-      <EntityDetail item={item} ctaLabel="Download Answer Key" fallbackBadge="AK" />
+      <EntityDetail item={item} ctaLabel="Download Answer Key" fallbackBadge="AK" telegramKind="answer key" />
       <RelatedTopicLink kind="answer keys" fields={[item.title, item.category]} />
       <FollowCTA />
     </>

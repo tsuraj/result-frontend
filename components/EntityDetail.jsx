@@ -1,4 +1,5 @@
 import { FaArrowRight, FaRegCalendarAlt, FaRupeeSign, FaExternalLinkAlt } from 'react-icons/fa'
+import InlineTelegramNudge from './InlineTelegramNudge'
 
 const fmtDate = (v) => {
   if (!v) return null
@@ -17,7 +18,7 @@ const Section = ({ title, children }) => (
 // Server-rendered detail for Result / Admit Card / Answer Key / Syllabus.
 // `item` is the API record; `backTo`/`backLabel` for the back link;
 // `ctaLabel` is the primary action button text (e.g. "Check Result").
-export default function EntityDetail({ item, ctaLabel = 'Open', fallbackBadge = 'GOV' }) {
+export default function EntityDetail({ item, ctaLabel = 'Open', fallbackBadge = 'GOV', telegramKind = 'update' }) {
   // backTo / backLabel props are deprecated — the parent page now renders
   // a <Breadcrumbs /> above this component which provides clearer navigation.
   const downloadLink = item.download_link || item.link
@@ -49,6 +50,7 @@ export default function EntityDetail({ item, ctaLabel = 'Open', fallbackBadge = 
                 <a href={item.website_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50">Official Website</a>
               )}
             </div>
+            <InlineTelegramNudge kind={telegramKind} />
           </div>
         </div>
       </div>
