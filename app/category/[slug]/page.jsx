@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation'
 import { FaArrowRight } from 'react-icons/fa'
 import JobCard from '../../../components/JobCard'
 import FollowCTA from '../../../components/FollowCTA'
+import Breadcrumbs from '../../../components/Breadcrumbs'
 import { getTopic } from '../../../lib/api'
 import { pageMetadata, breadcrumb, SITE_URL } from '../../../lib/seo'
+import { TOPIC_FAQS } from '../../../lib/topic-faqs'
 
 export const revalidate = 60
 
@@ -88,12 +90,34 @@ export default async function CategoryPage({ params }) {
     isPartOf: { '@type': 'WebSite', url: `${SITE_URL}/` },
   }
 
+  // FAQs for this topic — visible Q&A section + FAQPage JSON-LD for rich snippets.
+  const faqs = TOPIC_FAQS[topic.slug] || []
+  const faqJsonLd = faqs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }
+    : null
+
+  const ldGraph = [collectionJsonLd, crumbs]
+  if (faqJsonLd) ldGraph.push(faqJsonLd)
+
   return (
     <div className="max-w-5xl mx-auto">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([collectionJsonLd, crumbs]) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldGraph) }} />
+
+      <Breadcrumbs items={[
+        { name: 'Home', href: '/' },
+        { name: topic.name },
+      ]} />
 
       {/* Hero */}
-      <section className="mb-8">
+      <section className="mt-3 mb-8">
         <p className="text-[11px] font-bold uppercase tracking-wider text-red-600 mb-2">Category</p>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">{topic.name} Jobs, Results &amp; Admit Cards</h1>
         <p className="mt-3 text-gray-600 max-w-2xl">{topic.description}</p>
@@ -158,6 +182,25 @@ export default async function CategoryPage({ params }) {
         <div className="rounded-xl border border-dashed border-gray-300 p-8 text-center">
           <p className="text-gray-600 text-sm">No live {topic.name} content right now — check back soon, or follow our channels for instant alerts.</p>
         </div>
+      )}
+
+      {faqs.length > 0 && (
+        <section className="mt-10" aria-labelledby="faq-heading">
+          <h2 id="faq-heading" className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
+            {topic.name} — Frequently asked questions
+          </h2>
+          <div className="space-y-3">
+            {faqs.map((f, i) => (
+              <details key={i} className="group rounded-xl border border-gray-200 bg-white p-4 open:shadow-sm">
+                <summary className="cursor-pointer list-none flex items-center justify-between gap-3 text-sm font-semibold text-gray-900">
+                  <span>{f.q}</span>
+                  <span className="text-gray-400 text-xs group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <p className="mt-3 text-sm text-gray-700 leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
       )}
 
       <FollowCTA heading={`Never miss a ${topic.name} update`} subheading={`Get instant ${topic.name} job, result and admit card alerts the moment they drop.`} />

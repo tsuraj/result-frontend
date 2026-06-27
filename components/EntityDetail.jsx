@@ -1,5 +1,4 @@
-import Link from 'next/link'
-import { FaArrowLeft, FaArrowRight, FaRegCalendarAlt, FaRupeeSign, FaExternalLinkAlt } from 'react-icons/fa'
+import { FaArrowRight, FaRegCalendarAlt, FaRupeeSign, FaExternalLinkAlt } from 'react-icons/fa'
 
 const fmtDate = (v) => {
   if (!v) return null
@@ -18,15 +17,14 @@ const Section = ({ title, children }) => (
 // Server-rendered detail for Result / Admit Card / Answer Key / Syllabus.
 // `item` is the API record; `backTo`/`backLabel` for the back link;
 // `ctaLabel` is the primary action button text (e.g. "Check Result").
-export default function EntityDetail({ item, backTo, backLabel, ctaLabel = 'Open', fallbackBadge = 'GOV' }) {
+export default function EntityDetail({ item, ctaLabel = 'Open', fallbackBadge = 'GOV' }) {
+  // backTo / backLabel props are deprecated — the parent page now renders
+  // a <Breadcrumbs /> above this component which provides clearer navigation.
   const downloadLink = item.download_link || item.link
   const links = Array.isArray(item.links) ? item.links : []
 
   return (
     <div className="space-y-5">
-      <Link href={backTo} className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
-        <FaArrowLeft size={11} /> Back to {backLabel}
-      </Link>
 
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <div className="flex items-start gap-4">

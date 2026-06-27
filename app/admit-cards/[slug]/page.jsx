@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
 import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
+import Breadcrumbs from '../../../components/Breadcrumbs'
 import { getAdmitCard } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
 
@@ -47,7 +48,12 @@ export default async function AdmitCardDetailPage({ params }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([article, crumbs]) }} />
-      <EntityDetail item={item} backTo="/admit-cards" backLabel="Admit Cards" ctaLabel="Download Admit Card" fallbackBadge="AC" />
+      <Breadcrumbs items={[
+        { name: 'Home', href: '/' },
+        { name: 'Admit Cards', href: '/admit-cards' },
+        { name: item.title },
+      ]} />
+      <EntityDetail item={item} ctaLabel="Download Admit Card" fallbackBadge="AC" />
       <RelatedTopicLink kind="admit cards" fields={[item.title, item.category]} />
       <FollowCTA />
     </>

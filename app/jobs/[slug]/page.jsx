@@ -1,12 +1,12 @@
-import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import {
-  FaArrowLeft, FaArrowRight, FaMapMarkerAlt, FaRupeeSign, FaUsers,
+  FaArrowRight, FaMapMarkerAlt, FaRupeeSign, FaUsers,
   FaBriefcase, FaRegCalendarAlt, FaRegClock,
 } from 'react-icons/fa'
 import { getJob } from '../../../lib/api'
 import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
+import Breadcrumbs from '../../../components/Breadcrumbs'
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, pageMetadata, breadcrumb } from '../../../lib/seo'
 
 export const revalidate = 60
@@ -154,9 +154,11 @@ export default async function JobDetailPage({ params }) {
     <div className="space-y-5">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([jobPosting, crumbs]) }} />
 
-      <Link href="/latest-jobs" className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
-        <FaArrowLeft size={11} /> Back to Latest Jobs
-      </Link>
+      <Breadcrumbs items={[
+        { name: 'Home', href: '/' },
+        { name: 'Latest Jobs', href: '/latest-jobs' },
+        { name: title },
+      ]} />
 
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <div className="flex items-start justify-between gap-3">

@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
 import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
+import Breadcrumbs from '../../../components/Breadcrumbs'
 import { getAnswerKey } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
 
@@ -47,7 +48,12 @@ export default async function AnswerKeyDetailPage({ params }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([article, crumbs]) }} />
-      <EntityDetail item={item} backTo="/answer-keys" backLabel="Answer Keys" ctaLabel="Download Answer Key" fallbackBadge="AK" />
+      <Breadcrumbs items={[
+        { name: 'Home', href: '/' },
+        { name: 'Answer Keys', href: '/answer-keys' },
+        { name: item.title },
+      ]} />
+      <EntityDetail item={item} ctaLabel="Download Answer Key" fallbackBadge="AK" />
       <RelatedTopicLink kind="answer keys" fields={[item.title, item.category]} />
       <FollowCTA />
     </>

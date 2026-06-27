@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import EntityDetail from '../../../components/EntityDetail'
 import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
+import Breadcrumbs from '../../../components/Breadcrumbs'
 import { getSyllabus } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
 
@@ -47,7 +48,12 @@ export default async function SyllabusDetailPage({ params }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([article, crumbs]) }} />
-      <EntityDetail item={item} backTo="/syllabus" backLabel="Syllabus" ctaLabel="View Syllabus" fallbackBadge="SY" />
+      <Breadcrumbs items={[
+        { name: 'Home', href: '/' },
+        { name: 'Syllabus', href: '/syllabus' },
+        { name: item.title },
+      ]} />
+      <EntityDetail item={item} ctaLabel="View Syllabus" fallbackBadge="SY" />
       <RelatedTopicLink kind="syllabi" fields={[item.title, item.category, item.exam]} />
       <FollowCTA />
     </>
