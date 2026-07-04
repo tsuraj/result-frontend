@@ -3,8 +3,10 @@ import EntityDetail from '../../../components/EntityDetail'
 import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
 import Breadcrumbs from '../../../components/Breadcrumbs'
-import { getAdmitCard } from '../../../lib/api'
+import { getAdmitCard, getAdmitCards } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
+import { detectTopic } from '../../../lib/topics'
+import RelatedItems from '../../../components/RelatedItems'
 
 export const revalidate = 60
 
@@ -33,6 +35,13 @@ export default async function AdmitCardDetailPage({ params }) {
   if (item.slug && item.slug !== params.slug) redirect(`/admit-cards/${item.slug}`)
   const path = `/admit-cards/${item.slug || params.slug}`
   const description = cleanDesc(item.description) || `${item.title} — admit card details on Hire Sarkar.`
+
+  const topic = detectTopic(item.title, item.category)
+  let relatedAdmitCards = []
+  try {
+    const list = topic ? await getAdmitCards({ topic: topic.slug }) : await getAdmitCards({})
+    relatedAdmitCards = list.filter((r) => r.id !== item.id && r.slug !== params.slug).slice(0, 6)
+  } catch { /* keep empty */ }
   const article = articleJsonLd({
     title: item.title,
     description,
@@ -54,6 +63,11 @@ export default async function AdmitCardDetailPage({ params }) {
         { name: item.title },
       ]} />
       <EntityDetail item={item} ctaLabel="Download Admit Card" fallbackBadge="AC" telegramKind="admit card" />
+      <RelatedItems
+        items={relatedAdmitCards}
+        basePath="/admit-cards"
+        heading={topic ? `More ${topic.name} admit cards` : 'More admit cards'}
+      />
       <RelatedTopicLink kind="admit cards" fields={[item.title, item.category]} />
       <FollowCTA />
     </>

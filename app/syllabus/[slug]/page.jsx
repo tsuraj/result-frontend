@@ -3,8 +3,10 @@ import EntityDetail from '../../../components/EntityDetail'
 import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
 import Breadcrumbs from '../../../components/Breadcrumbs'
-import { getSyllabus } from '../../../lib/api'
+import { getSyllabus, getSyllabi } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
+import { detectTopic } from '../../../lib/topics'
+import RelatedItems from '../../../components/RelatedItems'
 
 export const revalidate = 60
 
@@ -33,6 +35,13 @@ export default async function SyllabusDetailPage({ params }) {
   if (item.slug && item.slug !== params.slug) redirect(`/syllabus/${item.slug}`)
   const path = `/syllabus/${item.slug || params.slug}`
   const description = cleanDesc(item.description) || `${item.title} — syllabus and exam pattern on Hire Sarkar.`
+
+  const topic = detectTopic(item.title, item.category, item.exam)
+  let relatedSyllabi = []
+  try {
+    const list = topic ? await getSyllabi({ topic: topic.slug }) : await getSyllabi({})
+    relatedSyllabi = list.filter((r) => r.id !== item.id && r.slug !== params.slug).slice(0, 6)
+  } catch { /* keep empty */ }
   const article = articleJsonLd({
     title: item.title,
     description,
@@ -54,6 +63,11 @@ export default async function SyllabusDetailPage({ params }) {
         { name: item.title },
       ]} />
       <EntityDetail item={item} ctaLabel="View Syllabus" fallbackBadge="SY" telegramKind="syllabus" />
+      <RelatedItems
+        items={relatedSyllabi}
+        basePath="/syllabus"
+        heading={topic ? `More ${topic.name} syllabi` : 'More syllabi'}
+      />
       <RelatedTopicLink kind="syllabi" fields={[item.title, item.category, item.exam]} />
       <FollowCTA />
     </>

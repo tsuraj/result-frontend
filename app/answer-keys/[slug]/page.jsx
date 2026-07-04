@@ -3,8 +3,10 @@ import EntityDetail from '../../../components/EntityDetail'
 import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
 import Breadcrumbs from '../../../components/Breadcrumbs'
-import { getAnswerKey } from '../../../lib/api'
+import { getAnswerKey, getAnswerKeys } from '../../../lib/api'
 import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
+import { detectTopic } from '../../../lib/topics'
+import RelatedItems from '../../../components/RelatedItems'
 
 export const revalidate = 60
 
@@ -33,6 +35,13 @@ export default async function AnswerKeyDetailPage({ params }) {
   if (item.slug && item.slug !== params.slug) redirect(`/answer-keys/${item.slug}`)
   const path = `/answer-keys/${item.slug || params.slug}`
   const description = cleanDesc(item.description) || `${item.title} — answer key details on Hire Sarkar.`
+
+  const topic = detectTopic(item.title, item.category)
+  let relatedAnswerKeys = []
+  try {
+    const list = topic ? await getAnswerKeys({ topic: topic.slug }) : await getAnswerKeys({})
+    relatedAnswerKeys = list.filter((r) => r.id !== item.id && r.slug !== params.slug).slice(0, 6)
+  } catch { /* keep empty */ }
   const article = articleJsonLd({
     title: item.title,
     description,
@@ -54,6 +63,11 @@ export default async function AnswerKeyDetailPage({ params }) {
         { name: item.title },
       ]} />
       <EntityDetail item={item} ctaLabel="Download Answer Key" fallbackBadge="AK" telegramKind="answer key" />
+      <RelatedItems
+        items={relatedAnswerKeys}
+        basePath="/answer-keys"
+        heading={topic ? `More ${topic.name} answer keys` : 'More answer keys'}
+      />
       <RelatedTopicLink kind="answer keys" fields={[item.title, item.category]} />
       <FollowCTA />
     </>

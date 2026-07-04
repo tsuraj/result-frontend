@@ -3,11 +3,13 @@ import {
   FaArrowRight, FaMapMarkerAlt, FaRupeeSign, FaUsers,
   FaBriefcase, FaRegCalendarAlt, FaRegClock,
 } from 'react-icons/fa'
-import { getJob } from '../../../lib/api'
+import { getJob, getJobs } from '../../../lib/api'
 import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
 import Breadcrumbs from '../../../components/Breadcrumbs'
 import InlineTelegramNudge from '../../../components/InlineTelegramNudge'
+import RelatedItems from '../../../components/RelatedItems'
+import { detectTopic } from '../../../lib/topics'
 import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, pageMetadata, breadcrumb } from '../../../lib/seo'
 
 export const revalidate = 60
@@ -128,6 +130,21 @@ export default async function JobDetailPage({ params }) {
     lastDate: d.last_date || job.last_date,
   })
 
+  // Related jobs — same-topic siblings. detectTopic reads the current
+  // job's title/organization/location and returns the matching TOPICS
+  // slug (railway/banking/ssc/...) or null. If null, fall back to the
+  // latest jobs so we still have something to show.
+  const topic = detectTopic(title, organization, d.location)
+  let relatedJobs = []
+  try {
+    const data = topic
+      ? await getJobs({ topic: topic.slug, perPage: 8 })
+      : await getJobs({ perPage: 8 })
+    relatedJobs = (Array.isArray(data?.jobs) ? data.jobs : [])
+      .filter((j) => j.id !== job.id && j.slug !== slug)
+      .slice(0, 6)
+  } catch { /* keep empty */ }
+
   const jobPosting = {
     '@context': 'https://schema.org',
     '@type': 'JobPosting',
@@ -219,6 +236,11 @@ export default async function JobDetailPage({ params }) {
 
       {d.how_to_apply && <Section title="How to apply"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.how_to_apply}</p></Section>}
 
+      <RelatedItems
+        items={relatedJobs}
+        basePath="/jobs"
+        heading={topic ? `More ${topic.name} jobs` : 'More jobs'}
+      />
       <RelatedTopicLink kind="jobs" fields={[title, organization, d.location]} />
       <FollowCTA />
     </div>
