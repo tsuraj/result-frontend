@@ -10,7 +10,7 @@ import Breadcrumbs from '../../../components/Breadcrumbs'
 import InlineTelegramNudge from '../../../components/InlineTelegramNudge'
 import RelatedItems from '../../../components/RelatedItems'
 import { detectTopic } from '../../../lib/topics'
-import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, pageMetadata, breadcrumb } from '../../../lib/seo'
+import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, pageMetadata, breadcrumb, cleanDescription } from '../../../lib/seo'
 
 export const revalidate = 60
 
@@ -82,7 +82,7 @@ const parseBaseSalary = (text) => {
   return { '@type': 'MonetaryAmount', currency: 'INR', value }
 }
 
-const cleanDesc = (s) => (s || '').replace(/\s+/g, ' ').trim().slice(0, 160)
+const cleanDesc = (s) => cleanDescription(s)
 
 export async function generateMetadata({ params }) {
   const job = await getJob(params.slug)

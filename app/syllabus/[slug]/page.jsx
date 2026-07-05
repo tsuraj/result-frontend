@@ -4,13 +4,13 @@ import FollowCTA from '../../../components/FollowCTA'
 import RelatedTopicLink from '../../../components/RelatedTopicLink'
 import Breadcrumbs from '../../../components/Breadcrumbs'
 import { getSyllabus, getSyllabi } from '../../../lib/api'
-import { pageMetadata, breadcrumb, articleJsonLd } from '../../../lib/seo'
+import { pageMetadata, breadcrumb, articleJsonLd, cleanDescription } from '../../../lib/seo'
 import { detectTopic } from '../../../lib/topics'
 import RelatedItems from '../../../components/RelatedItems'
 
 export const revalidate = 60
 
-const cleanDesc = (s) => (s || '').replace(/\s+/g, ' ').trim().slice(0, 160)
+const cleanDesc = (s) => cleanDescription(s)
 const toIso = (v) => {
   if (!v) return undefined
   const d = new Date(v)
