@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { FaRegCalendarAlt } from 'react-icons/fa'
+import { FaRegCalendarAlt, FaRegClock } from 'react-icons/fa'
+import { timeAgo } from '../lib/timeAgo'
 
 const fmtDate = (v) => {
   if (!v) return null
@@ -23,6 +24,7 @@ export default function RelatedItems({ items = [], basePath, heading = 'Related'
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {items.map((item) => {
           const dateStr = fmtDate(item.date || item.last_date)
+          const posted = timeAgo(item.created_at || item.createdAt)
           return (
             <Link
               key={item.id}
@@ -37,6 +39,14 @@ export default function RelatedItems({ items = [], basePath, heading = 'Related'
                   <span className="inline-flex items-center gap-1">
                     <FaRegCalendarAlt size={10} className="text-gray-400" /> {dateStr}
                   </span>
+                )}
+                {posted && (
+                  <>
+                    {(item.category || dateStr) && <span aria-hidden>·</span>}
+                    <span className="inline-flex items-center gap-1">
+                      <FaRegClock size={10} className="text-gray-400" /> {posted}
+                    </span>
+                  </>
                 )}
               </div>
             </Link>

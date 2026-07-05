@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { FaArrowRight, FaSearch, FaTimes, FaRegCalendarAlt } from 'react-icons/fa'
+import { FaArrowRight, FaSearch, FaTimes, FaRegCalendarAlt, FaRegClock } from 'react-icons/fa'
+import { timeAgo } from '../lib/timeAgo'
 
 const PAGE_SIZE = 20
 
@@ -60,9 +61,16 @@ export default function EntityListClient({ items = [], basePath, label, fallback
                 <h3 className="font-semibold text-gray-900 text-base md:text-lg leading-snug">{item.title}</h3>
                 <div className="mt-1 flex items-center gap-2 flex-wrap">
                   {item.category && <span className={`text-[10px] font-bold tracking-wide px-2 py-1 rounded-full ${accentCls}`}>{item.category}</span>}
-                  <span className="inline-flex items-center gap-1 text-xs text-gray-500">
-                    <FaRegCalendarAlt size={11} className="text-gray-400" /> {fmtDate(item.date) || '—'}
-                  </span>
+                  {fmtDate(item.date) && (
+                    <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                      <FaRegCalendarAlt size={11} className="text-gray-400" /> {fmtDate(item.date)}
+                    </span>
+                  )}
+                  {timeAgo(item.created_at || item.createdAt) && (
+                    <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                      <FaRegClock size={11} className="text-gray-400" /> Posted {timeAgo(item.created_at || item.createdAt)}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

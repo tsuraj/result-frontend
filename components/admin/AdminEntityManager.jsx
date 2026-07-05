@@ -45,6 +45,7 @@ export default function AdminEntityManager({ config }) {
     category: '',
     date: '',
     published: false,
+    bumped: false,
     ...Object.fromEntries(extraFields.map((f) => [f.name, ''])),
   }
 
@@ -101,6 +102,7 @@ export default function AdminEntityManager({ config }) {
         category: full.category || '',
         date: toDateInput(full.date),
         published: Boolean(full.published),
+        bumped: Boolean(full.bumped_at),
         ...Object.fromEntries(extraFields.map((f) => [f.name, full[f.name] || ''])),
       })
       const d = full[detailKey] || {}
@@ -292,6 +294,16 @@ export default function AdminEntityManager({ config }) {
               <span className="font-medium text-gray-700">Publish (visible on public site)</span>
               <span className="text-[10px] text-gray-500">Uncheck to save as a draft.</span>
             </label>
+            <label className="flex items-center gap-2 text-xs sm:col-span-2">
+              <input
+                type="checkbox"
+                checked={Boolean(entityForm.bumped)}
+                onChange={(e) => setEntityForm({ ...entityForm, bumped: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <span className="font-medium text-gray-700">Bump to top of listings</span>
+              <span className="text-[10px] text-gray-500">Floats above unbumped items; uncheck to remove.</span>
+            </label>
           </div>
 
           <h3 className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-500">
@@ -376,6 +388,9 @@ export default function AdminEntityManager({ config }) {
                 {!r.published && (
                   <span className="rounded-full bg-amber-100 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
                 )}
+                {r.bumped_at && (
+                  <span className="rounded-full bg-purple-100 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-purple-800">Bumped</span>
+                )}
               </div>
               <p className="truncate text-[11px] text-gray-500">
                 {r.category || '-'} · {toDateInput(r.date) || '-'}
@@ -428,11 +443,16 @@ export default function AdminEntityManager({ config }) {
                 <td className="px-2 py-1">{r.category || '-'}</td>
                 <td className="px-2 py-1">{toDateInput(r.date) || '-'}</td>
                 <td className="px-2 py-1">
-                  {r.published ? (
-                    <span className="rounded-full bg-green-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-green-800">Live</span>
-                  ) : (
-                    <span className="rounded-full bg-amber-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
-                  )}
+                  <div className="flex flex-wrap gap-1">
+                    {r.published ? (
+                      <span className="rounded-full bg-green-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-green-800">Live</span>
+                    ) : (
+                      <span className="rounded-full bg-amber-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
+                    )}
+                    {r.bumped_at && (
+                      <span className="rounded-full bg-purple-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-purple-800">Bumped</span>
+                    )}
+                  </div>
                 </td>
                 <td className="px-2 py-1 text-right whitespace-nowrap">
                   <button

@@ -4,7 +4,7 @@ import { authFetch, API_BASE } from '../../lib/authFetch'
 import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
 import { useRole, isAdminRole } from '../../lib/useRole'
 
-const emptyJob = { title: '', organization: '', last_date: '', published: false }
+const emptyJob = { title: '', organization: '', last_date: '', published: false, bumped: false }
 
 const emptyDetail = {
   type: 'Full Time',
@@ -112,6 +112,7 @@ export default function AdminJobs() {
         organization: full.organization || '',
         last_date: toDateInput(full.last_date),
         published: Boolean(full.published),
+        bumped: Boolean(full.bumped_at),
       })
       const d = full.job_detail || {}
       setDetailForm({
@@ -278,6 +279,16 @@ export default function AdminJobs() {
               <span className="font-medium text-gray-700">Publish (visible on public site)</span>
               <span className="text-[10px] text-gray-500">Uncheck to save as a draft.</span>
             </label>
+            <label className="flex items-center gap-2 text-xs sm:col-span-2">
+              <input
+                type="checkbox"
+                checked={Boolean(jobForm.bumped)}
+                onChange={(e) => setJobForm({ ...jobForm, bumped: e.target.checked })}
+                className="h-4 w-4"
+              />
+              <span className="font-medium text-gray-700">Bump to top of listings</span>
+              <span className="text-[10px] text-gray-500">Floats above unbumped jobs; uncheck to remove.</span>
+            </label>
           </div>
 
           <h3 className="mb-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-500">Job Details</h3>
@@ -343,6 +354,9 @@ export default function AdminJobs() {
                 {!j.published && (
                   <span className="rounded-full bg-amber-100 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
                 )}
+                {j.bumped_at && (
+                  <span className="rounded-full bg-purple-100 px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-purple-800">Bumped</span>
+                )}
               </div>
               <p className="truncate text-[11px] text-gray-500">{j.organization || '-'} · {toDateInput(j.last_date) || '-'}</p>
             </div>
@@ -384,11 +398,16 @@ export default function AdminJobs() {
                 <td className="px-2 py-1">{j.organization || '-'}</td>
                 <td className="px-2 py-1">{toDateInput(j.last_date) || '-'}</td>
                 <td className="px-2 py-1">
-                  {j.published ? (
-                    <span className="rounded-full bg-green-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-green-800">Live</span>
-                  ) : (
-                    <span className="rounded-full bg-amber-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
-                  )}
+                  <div className="flex flex-wrap gap-1">
+                    {j.published ? (
+                      <span className="rounded-full bg-green-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-green-800">Live</span>
+                    ) : (
+                      <span className="rounded-full bg-amber-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-amber-800">Draft</span>
+                    )}
+                    {j.bumped_at && (
+                      <span className="rounded-full bg-purple-100 px-2 py-px text-[10px] font-bold uppercase tracking-wide text-purple-800">Bumped</span>
+                    )}
+                  </div>
                 </td>
                 <td className="px-2 py-1 text-right whitespace-nowrap">
                   <button
