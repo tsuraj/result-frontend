@@ -23,9 +23,23 @@ export default function EntityDetail({ item, ctaLabel = 'Open', fallbackBadge = 
   // a <Breadcrumbs /> above this component which provides clearer navigation.
   const downloadLink = item.download_link || item.link
   const links = Array.isArray(item.links) ? item.links : []
+  const faqs = Array.isArray(item.faqs) ? item.faqs.filter((f) => f.question && f.answer) : []
+
+  const faqJsonLd = faqs.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  } : null
 
   return (
     <div className="space-y-5">
+      {faqJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      )}
 
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <div className="flex items-start gap-4">
@@ -68,11 +82,38 @@ export default function EntityDetail({ item, ctaLabel = 'Open', fallbackBadge = 
             <div className="mt-1 text-sm font-semibold text-gray-900">{item.application_fee}</div>
           </div>
         )}
+        {item.exam_duration && (
+          <div className="rounded-xl border border-gray-200 bg-white px-4 py-3">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">Exam Duration</div>
+            <div className="mt-1 text-sm font-semibold text-gray-900">{item.exam_duration}</div>
+          </div>
+        )}
+        {item.negative_marking && (
+          <div className="rounded-xl border border-gray-200 bg-white px-4 py-3">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">Negative Marking</div>
+            <div className="mt-1 text-sm font-semibold text-gray-900">{item.negative_marking}</div>
+          </div>
+        )}
       </div>
 
       {item.description && <Section title="Description"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{item.description}</p></Section>}
+      {item.exam_pattern && <Section title="Exam Pattern"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{item.exam_pattern}</p></Section>}
+      {item.subject_wise_syllabus && <Section title="Subject-wise Syllabus"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{item.subject_wise_syllabus}</p></Section>}
       {item.eligibility && <Section title="Eligibility"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{item.eligibility}</p></Section>}
       {item.selection_process && <Section title="Selection Process"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{item.selection_process}</p></Section>}
+
+      {faqs.length > 0 && (
+        <Section title="Frequently Asked Questions">
+          <div className="space-y-4">
+            {faqs.map((f, idx) => (
+              <div key={idx}>
+                <h3 className="text-sm font-semibold text-gray-900">{f.question}</h3>
+                <p className="mt-1 whitespace-pre-line text-sm text-gray-700 leading-relaxed">{f.answer}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
 
       {links.length > 0 && (
         <Section title="Important Links">

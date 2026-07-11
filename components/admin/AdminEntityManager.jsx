@@ -17,6 +17,7 @@ const emptyDetail = {
 }
 
 const emptyLink = { link_type: '', title: '', url: '' }
+const emptyFaq = { question: '', answer: '' }
 
 const toDateInput = (val) => {
   if (!val) return ''
@@ -27,7 +28,8 @@ const toDateInput = (val) => {
 
 /**
  * Reusable admin CRUD manager driven by config.
- *   { title, entityLabel, resource, payloadKey, detailKey, hasLinks?, extraFields? }
+ *   { title, entityLabel, resource, payloadKey, detailKey, hasLinks?, extraFields?, extraDetailFields?, hasFaqs? }
+ *   extraDetailFields: [{ name, label, type: 'text' | 'textarea' }]
  */
 export default function AdminEntityManager({ config }) {
   const {
@@ -38,6 +40,8 @@ export default function AdminEntityManager({ config }) {
     detailKey,
     hasLinks = false,
     extraFields = [],
+    extraDetailFields = [],
+    hasFaqs = false,
   } = config
 
   const emptyEntity = {
@@ -49,6 +53,11 @@ export default function AdminEntityManager({ config }) {
     ...Object.fromEntries(extraFields.map((f) => [f.name, ''])),
   }
 
+  const emptyDetailForConfig = {
+    ...emptyDetail,
+    ...Object.fromEntries(extraDetailFields.map((f) => [f.name, ''])),
+  }
+
   const role = useRole()
   const canDelete = isAdminRole(role)
 
@@ -57,9 +66,10 @@ export default function AdminEntityManager({ config }) {
   const [error, setError] = useState('')
   const [editingId, setEditingId] = useState(null)
   const [entityForm, setEntityForm] = useState(emptyEntity)
-  const [detailForm, setDetailForm] = useState(emptyDetail)
+  const [detailForm, setDetailForm] = useState(emptyDetailForConfig)
   const [links, setLinks] = useState([])
   const [removedLinkIds, setRemovedLinkIds] = useState([])
+  const [faqs, setFaqs] = useState([])
   const [showForm, setShowForm] = useState(false)
 
   const loadItems = () => {
@@ -79,9 +89,10 @@ export default function AdminEntityManager({ config }) {
   const resetForm = () => {
     setEditingId(null)
     setEntityForm(emptyEntity)
-    setDetailForm(emptyDetail)
+    setDetailForm(emptyDetailForConfig)
     setLinks([])
     setRemovedLinkIds([])
+    setFaqs([])
     setShowForm(false)
   }
 
@@ -116,6 +127,7 @@ export default function AdminEntityManager({ config }) {
         notification_link: d.notification_link || full.notification_link || '',
         website_link: d.website_link || full.website_link || '',
         download_link: d.download_link || full.download_link || '',
+        ...Object.fromEntries(extraDetailFields.map((f) => [f.name, d[f.name] || full[f.name] || ''])),
       })
       const sourceLinks = Array.isArray(full.links) ? full.links : []
       setLinks(
@@ -127,6 +139,8 @@ export default function AdminEntityManager({ config }) {
         }))
       )
       setRemovedLinkIds([])
+      const sourceFaqs = Array.isArray(d.faqs) ? d.faqs : Array.isArray(full.faqs) ? full.faqs : []
+      setFaqs(sourceFaqs.map((f) => ({ question: f.question || '', answer: f.answer || '' })))
       setShowForm(true)
     } catch (e) {
       setError(e.message)
@@ -180,12 +194,22 @@ export default function AdminEntityManager({ config }) {
     })
   }
 
+  const addFaq = () => setFaqs((prev) => [...prev, { ...emptyFaq }])
+
+  const updateFaq = (idx, field, value) =>
+    setFaqs((prev) => prev.map((f, i) => (i === idx ? { ...f, [field]: value } : f)))
+
+  const removeFaq = (idx) => setFaqs((prev) => prev.filter((_, i) => i !== idx))
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
     const { id: detailId, ...detailRest } = detailForm
     const detailAttrs = detailId ? { id: detailId, ...detailRest } : detailRest
+    if (hasFaqs) {
+      detailAttrs.faqs = faqs.filter((f) => f.question.trim() || f.answer.trim())
+    }
 
     const body = {
       ...entityForm,
@@ -318,7 +342,53 @@ export default function AdminEntityManager({ config }) {
             {textarea('Important Dates', detailForm.important_dates, (v) => setDetailForm({ ...detailForm, important_dates: v }), null, 6)}
             {textarea('Eligibility', detailForm.eligibility, (v) => setDetailForm({ ...detailForm, eligibility: v }), null, 8)}
             {textarea('Selection Process', detailForm.selection_process, (v) => setDetailForm({ ...detailForm, selection_process: v }), null, 8)}
+            {extraDetailFields.map((f) =>
+              f.type === 'textarea' ? (
+                <React.Fragment key={f.name}>
+                  {textarea(f.label, detailForm[f.name], (v) => setDetailForm({ ...detailForm, [f.name]: v }), null, 6)}
+                </React.Fragment>
+              ) : (
+                <React.Fragment key={f.name}>
+                  {input(f.label, detailForm[f.name], (v) => setDetailForm({ ...detailForm, [f.name]: v }))}
+                </React.Fragment>
+              )
+            )}
           </div>
+
+          {hasFaqs && (
+            <>
+              <div className="mt-4 flex items-center justify-between">
+                <h3 className="text-[11px] font-bold uppercase tracking-wide text-gray-500">FAQs</h3>
+                <button
+                  type="button"
+                  onClick={addFaq}
+                  className="rounded bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-200"
+                >
+                  + Add FAQ
+                </button>
+              </div>
+              <div className="mt-1.5 space-y-2">
+                {faqs.length === 0 && <p className="text-[11px] text-gray-500">No FAQs added.</p>}
+                {faqs.map((f, idx) => (
+                  <div key={idx} className="grid grid-cols-1 gap-2 rounded border border-gray-200 p-2">
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1">
+                        {input('Question', f.question, (v) => updateFaq(idx, 'question', v))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFaq(idx)}
+                        className="mt-5 shrink-0 rounded bg-red-100 px-2 py-1 text-[11px] font-semibold text-red-700 hover:bg-red-200"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    {textarea('Answer', f.answer, (v) => updateFaq(idx, 'answer', v), null, 3)}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           {hasLinks && (
             <>
