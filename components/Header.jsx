@@ -10,9 +10,7 @@ const navItems = [
   { name: 'Results', path: '/results' },
   { name: 'Admit Card', path: '/admit-cards' },
   { name: 'Answer Key', path: '/answer-keys' },
-  // Syllabus link is intentionally omitted until we publish syllabus content.
-  // Restore this entry once /admin/syllabus has live entries.
-  // { name: 'Syllabus', path: '/syllabus' },
+  { name: 'Syllabus', path: '/syllabus' },
   { name: 'Updates', path: '/updates' },
 ]
 
