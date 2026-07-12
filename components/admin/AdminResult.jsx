@@ -4,7 +4,8 @@ import { authFetch, API_BASE } from '../../lib/authFetch'
 import { triggerRevalidate, revalidationPaths } from '../../lib/triggerRevalidate'
 import { useRole, isAdminRole } from '../../lib/useRole'
 
-const emptyResult = { title: '', category: '', date: '', published: false, bumped: false }
+const emptyResult = { title: '', category: '', date: '', published: false, bumped: false, job_id: null, stage: '' }
+const STAGE_OPTIONS = ['Prelims', 'Tier 1', 'Tier 2', 'Mains', 'Final', 'Merit List', 'Other']
 
 const emptyDetail = {
   id: undefined,
@@ -40,6 +41,9 @@ export default function AdminResult() {
   const [links, setLinks] = useState([])
   const [removedLinkIds, setRemovedLinkIds] = useState([])
   const [showForm, setShowForm] = useState(false)
+  const [jobQuery, setJobQuery] = useState('')
+  const [jobResults, setJobResults] = useState([])
+  const [selectedJob, setSelectedJob] = useState(null)
 
   const loadResults = () => {
     setLoading(true)
@@ -58,7 +62,38 @@ export default function AdminResult() {
     setDetailForm(emptyDetail)
     setLinks([])
     setRemovedLinkIds([])
+    setJobQuery('')
+    setJobResults([])
+    setSelectedJob(null)
     setShowForm(false)
+  }
+
+  const searchJobs = async (q) => {
+    setJobQuery(q)
+    if (!q.trim()) {
+      setJobResults([])
+      return
+    }
+    try {
+      const res = await authFetch(`${API_BASE}/jobs/search?q=${encodeURIComponent(q)}`)
+      if (!res.ok) return
+      const data = await res.json()
+      setJobResults(Array.isArray(data) ? data.slice(0, 10) : [])
+    } catch {
+      setJobResults([])
+    }
+  }
+
+  const pickJob = (job) => {
+    setSelectedJob(job)
+    setResultForm((prev) => ({ ...prev, job_id: job.id }))
+    setJobQuery('')
+    setJobResults([])
+  }
+
+  const clearJob = () => {
+    setSelectedJob(null)
+    setResultForm((prev) => ({ ...prev, job_id: null }))
   }
 
   const startCreate = () => { resetForm(); setShowForm(true) }
@@ -70,7 +105,16 @@ export default function AdminResult() {
       if (!res.ok) throw new Error('Failed to load result')
       const full = await res.json()
       setEditingId(full.id)
-      setResultForm({ title: full.title || '', category: full.category || '', date: toDateInput(full.date), published: Boolean(full.published), bumped: Boolean(full.bumped_at) })
+      setResultForm({
+        title: full.title || '',
+        category: full.category || '',
+        date: toDateInput(full.date),
+        published: Boolean(full.published),
+        bumped: Boolean(full.bumped_at),
+        job_id: full.job?.id ?? null,
+        stage: full.stage || '',
+      })
+      setSelectedJob(full.job || null)
       const d = full.result_detail || {}
       setDetailForm({
         id: d.id,
@@ -223,6 +267,55 @@ export default function AdminResult() {
             {input('Title', resultForm.title, (v) => setResultForm({ ...resultForm, title: v }))}
             {input('Category', resultForm.category, (v) => setResultForm({ ...resultForm, category: v }))}
             {input('Date', resultForm.date, (v) => setResultForm({ ...resultForm, date: v }), 'date')}
+            <label className="flex flex-col text-sm">
+              <span className="mb-1 text-xs font-medium text-gray-600">Stage</span>
+              <select
+                value={resultForm.stage}
+                onChange={(e) => setResultForm({ ...resultForm, stage: e.target.value })}
+                className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/40"
+              >
+                <option value="">-</option>
+                {STAGE_OPTIONS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </label>
+            <div className="flex flex-col text-sm sm:col-span-2">
+              <span className="mb-1 text-xs font-medium text-gray-600">Link to Job</span>
+              {selectedJob ? (
+                <div className="flex items-center justify-between rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm">
+                  <span className="truncate">{selectedJob.title}</span>
+                  <button type="button" onClick={clearJob} className="ml-2 shrink-0 text-xs font-semibold text-red-600 hover:text-red-700">
+                    Unlink
+                  </button>
+                </div>
+              ) : (
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={jobQuery}
+                    onChange={(e) => searchJobs(e.target.value)}
+                    placeholder="Search job title..."
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/40"
+                  />
+                  {jobResults.length > 0 && (
+                    <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+                      {jobResults.map((job) => (
+                        <li key={job.id}>
+                          <button
+                            type="button"
+                            onClick={() => pickJob(job)}
+                            className="block w-full truncate px-3 py-1.5 text-left text-xs hover:bg-gray-100"
+                          >
+                            {job.title}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
             <label className="flex items-center gap-2 text-xs sm:col-span-2">
               <input
                 type="checkbox"

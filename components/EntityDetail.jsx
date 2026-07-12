@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { FaArrowRight, FaRegCalendarAlt, FaRupeeSign, FaExternalLinkAlt } from 'react-icons/fa'
 import InlineTelegramNudge from './InlineTelegramNudge'
 
@@ -112,6 +113,17 @@ export default function EntityDetail({ item, ctaLabel = 'Open', fallbackBadge = 
               </div>
             ))}
           </div>
+        </Section>
+      )}
+
+      {item.job?.slug && (
+        <Section title="Related Job">
+          <Link
+            href={`/jobs/${item.job.slug}`}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700"
+          >
+            {item.job.title} <FaArrowRight size={11} />
+          </Link>
         </Section>
       )}
 

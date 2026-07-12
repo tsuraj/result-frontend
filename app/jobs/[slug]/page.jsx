@@ -236,6 +236,33 @@ export default async function JobDetailPage({ params }) {
 
       {d.how_to_apply && <Section title="How to apply"><p className="whitespace-pre-line text-sm text-gray-700 leading-relaxed">{d.how_to_apply}</p></Section>}
 
+      {(job.syllabus || job.admit_cards?.length > 0 || job.answer_keys?.length > 0 || job.results?.length > 0) && (
+        <Section title="Related Exam Resources">
+          <div className="flex flex-wrap gap-2">
+            {job.syllabus && (
+              <a href={`/syllabus/${job.syllabus.slug}`} className="rounded-full border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-800 hover:bg-gray-50">
+                Syllabus: {job.syllabus.title}
+              </a>
+            )}
+            {(job.admit_cards || []).map((ac) => (
+              <a key={ac.id} href={`/admit-cards/${ac.slug}`} className="rounded-full border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-800 hover:bg-gray-50">
+                Admit Card: {ac.title}
+              </a>
+            ))}
+            {(job.answer_keys || []).map((ak) => (
+              <a key={ak.id} href={`/answer-keys/${ak.slug}`} className="rounded-full border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-800 hover:bg-gray-50">
+                Answer Key: {ak.title}
+              </a>
+            ))}
+            {(job.results || []).map((r) => (
+              <a key={r.id} href={`/results/${r.slug}`} className="rounded-full border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-800 hover:bg-gray-50">
+                Result{r.stage ? ` (${r.stage})` : ''}: {r.title}
+              </a>
+            ))}
+          </div>
+        </Section>
+      )}
+
       <RelatedItems
         items={relatedJobs}
         basePath="/jobs"

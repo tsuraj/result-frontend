@@ -8,6 +8,7 @@ const config = {
   payloadKey: 'answer_key',
   detailKey: 'answer_key_detail',
   hasLinks: true,
+  hasJobLink: true,
 }
 
 export default function Page() {

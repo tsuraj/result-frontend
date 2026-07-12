@@ -16,6 +16,7 @@ const config = {
     { name: 'exam_duration', label: 'Exam Duration' },
   ],
   hasFaqs: true,
+  hasJobLink: true,
 }
 
 export default function Page() {

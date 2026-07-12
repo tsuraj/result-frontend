@@ -8,6 +8,7 @@ const config = {
   payloadKey: 'admit_card',
   detailKey: 'admit_card_detail',
   hasLinks: true,
+  hasJobLink: true,
 }
 
 export default function Page() {
