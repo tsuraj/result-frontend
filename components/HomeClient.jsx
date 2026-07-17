@@ -32,11 +32,13 @@ const qualToTitleLike = {
   'Post Graduate': 'Post Graduate',
 }
 
-const closingThisWeekStatic = [
-  { name: 'RRB NTPC', sub: 'Last date to apply', days: '3d' },
-  { name: 'UP Police', sub: 'Application closes', days: '7d' },
-  { name: 'SSC CGL', sub: 'Window closes', days: '11d' },
-]
+const daysLeft = (lastDate) => {
+  if (!lastDate) return null
+  const d = new Date(lastDate)
+  if (Number.isNaN(d.getTime())) return null
+  const diff = Math.ceil((d - new Date()) / (1000 * 60 * 60 * 24))
+  return diff >= 0 ? diff : null
+}
 
 const ActiveChip = ({ label, onClear }) => (
   <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full">
@@ -67,6 +69,7 @@ export default function HomeClient({ initialStats = {}, initialUpdates = [], cat
   const [categoryOpen, setCategoryOpen] = useState(false)
   const [qualificationOpen, setQualificationOpen] = useState(false)
   const [stateOpen, setStateOpen] = useState(false)
+  const [closingSoon, setClosingSoon] = useState([])
 
   useEffect(() => {
     const id = setTimeout(() => setDebouncedQuery(query), 300)
@@ -126,6 +129,14 @@ export default function HomeClient({ initialStats = {}, initialUpdates = [], cat
       .catch(() => setJobs([]))
       .finally(() => setLoading(false))
   }, [page, debouncedQuery, activeChip, activeCategory, activeQualification, activeState, sort])
+
+  useEffect(() => {
+    const p = new URLSearchParams({ per_page: 3, sort: 'closing', closing_within: 14 })
+    fetch(`${API_BASE}/jobs?${p.toString()}`)
+      .then((res) => res.json())
+      .then((data) => setClosingSoon(Array.isArray(data.jobs) ? data.jobs : []))
+      .catch(() => setClosingSoon([]))
+  }, [])
 
   const refreshStats = () => {
     fetch(`${API_BASE}/jobs?per_page=1&page=1`)
@@ -455,15 +466,18 @@ export default function HomeClient({ initialStats = {}, initialUpdates = [], cat
               </div>
               <Link href="/latest-jobs" className="text-xs text-gray-500 hover:text-gray-800">All</Link>
             </div>
+            {closingSoon.length === 0 && (
+              <p className="py-3 text-xs text-gray-500">No jobs closing soon right now.</p>
+            )}
             <ul className="divide-y divide-gray-100">
-              {closingThisWeekStatic.map((item) => (
-                <li key={item.name} className="py-3 flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">{item.name}</div>
-                    <div className="text-xs text-gray-500">{item.sub}</div>
-                  </div>
+              {closingSoon.map((job) => (
+                <li key={job.id} className="py-3 flex items-start justify-between gap-3">
+                  <Link href={`/jobs/${job.slug}`} className="min-w-0">
+                    <div className="text-sm font-medium text-gray-900 truncate">{job.title}</div>
+                    <div className="text-xs text-gray-500">Application closes</div>
+                  </Link>
                   <div className="text-right">
-                    <div className="text-base font-bold text-red-600 leading-none">{item.days}</div>
+                    <div className="text-base font-bold text-red-600 leading-none">{daysLeft(job.last_date)}d</div>
                     <div className="text-[10px] font-semibold tracking-wider text-gray-400 uppercase">Left</div>
                   </div>
                 </li>
